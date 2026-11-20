@@ -312,12 +312,6 @@ body::after {
 
 <!-- SELECTOR BAR -->
 <div class="selector-bar">
-  <span>🎯 標的組織の切り替え:</span>
-  <select class="selector-select" onchange="if(this.value) location.href='/target/' + this.value;">
-    {% for t in targets %}
-    <option value="{{ t.id }}" {% if t.id == portal.id %}selected{% endif %}>{{ t.name }} ({{ t.industry }})</option>
-    {% endfor %}
-  </select>
   <span style="color: var(--text-muted); font-size: 0.78rem; margin-left: auto;">&bull; データベース (portal.db) から動的に情報をロード中</span>
 </div>
 
