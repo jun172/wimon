@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>QILIN BLOG // DATA EXTORTION PORTAL</title>
+<style>
+:root {
+  --bg-dark: #050608;
+  --bg-card: #0b0f17;
+  --bg-panel: #111722;
+  --border-color: #1f2937;
+  --accent-red: #ff1f3d;
+  --accent-orange: #ff7b00;
+  --accent-cyan: #00f0ff;
+  --accent-green: #00ff66;
+  --text-main: #b1bac4;
+  --text-muted: #6e7681;
+  --text-bright: #ffffff;
+}
+
+body {
+  background: var(--bg-dark);
+  color: var(--text-main);
+  font-family: "Courier New", Courier, monospace;
+  margin: 0; padding: 0;
+  overflow-x: hidden;
+}
+
+/* CRT SCANLINE */
+body::after {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.5) 50%);
+  background-size: 100% 3px;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* TOP BROWSER BAR */
+.browser-bar {
+  background: #080b10;
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+.url-bar {
+  background: var(--bg-dark);
+  border: 1px solid #30363d;
+  color: var(--accent-red);
+  padding: 5px 12px;
+  border-radius: 4px;
+  flex: 1;
+  font-family: monospace;
+  letter-spacing: 0.5px;
+}
+
+/* QILIN HEADER */
+.qilin-header {
+  background: #080b10;
+  border-bottom: 2px solid var(--accent-red);
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 0 30px rgba(255,31,61,0.2);
+}
+.qilin-logo {
+  font-size: 1.25rem;
+  color: var(--text-bright);
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 10px rgba(255,31,61,0.6);
+}
+.qilin-stats {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.qilin-stats span {
+  color: var(--accent-red);
+  font-weight: bold;
+}
+
+/* SUB NAVIGATION BAR */
+.sub-nav {
+  background: #030406;
+  padding: 12px 40px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  gap: 30px;
+  font-size: 0.82rem;
+}
+.sub-nav a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.sub-nav a.active, .sub-nav a:hover {
+  color: var(--accent-red);
+  font-weight: bold;
+  text-shadow: 0 0 8px rgba(255,31,61,0.4);
+}
+
+/* FILTER & SEARCH BAR */
+.filter-bar {
+  background: #060910;
+  padding: 15px 40px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.search-input {
+  background: #0e131d;
+  border: 1px solid var(--border-color);
+  color: var(--text-bright);
+  padding: 8px 15px;
+  border-radius: 4px;
+  width: 320px;
+  font-family: monospace;
+  font-size: 0.8rem;
+  outline: none;
+}
+.search-input:focus { border-color: var(--accent-red); }
+
+/* MAIN CONTAINER */
+.main-container {
+  max-width: 1350px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+/* TARGET ITEM CARD (Qilin Style) */
+.victim-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-left: 6px solid var(--accent-red);
+  border-radius: 6px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 25px rgba(0,0,0,0.6);
+  transition: all 0.2s;
+}
+.victim-card:hover {
+  border-color: var(--accent-red);
+  box-shadow: 0 0 30px rgba(255,31,61,0.2);
+}
+
+.victim-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px dashed var(--border-color);
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+.victim-info h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.5rem;
+  color: var(--text-bright);
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 10px rgba(255,31,61,0.3);
+}
+.victim-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.victim-meta span { color: var(--text-main); }
+
+/* ハッカー側の脅迫文・声明文表示ボックス */
+.statement-box {
+  background: linear-gradient(135deg, #160608, #030406);
+  border: 1px solid rgba(255,31,61,0.4);
+  border-left: 4px solid var(--accent-red);
+  padding: 20px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+.statement-title {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: var(--accent-red);
+  margin-bottom: 10px;
+  text-shadow: 0 0 5px rgba(255,31,61,0.5);
+}
+.statement-text {
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: #c9d1d9;
+  white-space: pre-wrap; /* 改行をそのまま綺麗に反映 */
+}
+
+/* TIMER & ACTION BLOCK */
+.card-action-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #060910;
+  padding: 15px 20px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+}
+.ransom-display {
+  font-size: 0.9rem;
+  color: var(--accent-red);
+  font-weight: bold;
+}
+.card-action-block {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.timer-box {
+  background: #030406;
+  border: 1px solid var(--accent-red);
+  padding: 8px 15px;
+  border-radius: 4px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(255,31,61,0.2);
+}
+.timer-label {
+  font-size: 0.6rem;
+  color: var(--accent-red);
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+  text-transform: uppercase;
+}
+.timer-val {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: var(--text-bright);
+  font-family: monospace;
+}
+.detail-btn {
+  background: transparent;
+  border: 1px solid var(--accent-orange);
+  color: var(--accent-orange);
+  padding: 10px 18px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 0.8rem;
+  text-decoration: none;
+  transition: all 0.2s;
+  display: inline-block;
+  text-align: center;
+}
+.detail-btn:hover {
+  background: rgba(255,123,0,0.2);
+  box-shadow: 0 0 15px rgba(255,123,0,0.4);
+}
+
+/* TERMINAL LOG PANEL */
+.terminal-panel {
+  background: #030406;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 20px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+.terminal-title {
+  font-size: 0.78rem;
+  color: var(--accent-cyan);
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+.terminal-log {
+  font-size: 0.75rem;
+  color: var(--accent-green);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+/* FOOTER BAR */
+footer {
+  background: #030406;
+  border-top: 1px solid var(--border-color);
+  padding: 15px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BROWSER BAR -->
+<div class="browser-bar">
+  <span>🔒 Tor Browser // Onion Circuit Active</span>
+  <div class="url-bar">http://qilinblq73v2az6...onion/portal/</div>
+</div>
+
+<!-- QILIN HEADER -->
+<div class="qilin-header">
+  <div class="qilin-logo">QILIN BLOG // DATA EXTORTION PORTAL</div>
+  <div class="qilin-stats">
+    TARGETS: <span>{{ victims|length }}</span> &nbsp;|&nbsp; 
+    TOTAL DATA: <span style="color:var(--accent-cyan);">730.5 GB</span> &nbsp;|&nbsp; 
+    STATUS: <span style="color:var(--accent-green);">ONLINE</span>
+  </div>
+</div>
+
+<!-- SUB NAVIGATION -->
+<div class="sub-nav">
+  <a href="#" class="active">ターゲット一覧 (Victims)</a>
+  <a href="#">プレスリリース (News / Blog)</a>
+  <a href="#">アフィリエイト・提携 (Partners)</a>
+</div>
+
+<!-- FILTER & SEARCH -->
+<div class="filter-bar">
+  <input type="text" class="search-input" placeholder="企業・学校名、業種、キーワードで検索..." />
+  <span style="font-size: 0.78rem; color: var(--text-muted);">暗号化ネットワークおよび公開タイマー同期中</span>
+</div>
+
+<div class="main-container">
+
+  <!-- データベースから取得した全ターゲットをループ処理し、各組織ごとの脅迫文を表示 -->
+  {% for v in victims %}
+  <div class="victim-card">
+    
+    <div class="victim-header-row">
+      <div class="victim-info">
+        <h2>{{ v.name }}</h2>
+        <div class="victim-meta">
+          <div>📂 組織分類: <span>{{ v.industry }}</span></div>
+          <div>📦 流出データ量: <span style="color:var(--accent-cyan);">{{ v.data_size }}</span></div>
+          <div>📅 侵害日: <span>{{ v.breach_date }}</span></div>
+          <div>💻 暗号化サーバー: <span style="color:var(--accent-orange);">{{ v.encrypted_servers }} 台</span></div>
+        </div>
+      </div>
+      <div>
+        <span style="background: rgba(255,31,61,0.15); border: 1px solid var(--accent-red); color: var(--accent-red); padding: 6px 12px; border-radius: 4px; font-weight: bold; font-size: 0.78rem;">
+          {{ v.critical_level }}
+        </span>
+      </div>
+    </div>
+
+    <!-- ハッカー側の脅迫文・声明文表示エリア（データベースの statement カラムと直結） -->
+    <div class="statement-box">
+      <div class="statement-title">[!] QILIN RANSOMWARE GROUP STATEMENT & DEMAND</div>
+      <div class="statement-text">{{ v.statement }}</div>
+    </div>
+
+    <!-- アクション＆タイマー行 -->
+    <div class="card-action-row">
+      <div class="ransom-display">
+        要求身代金: {{ v.ransom_amount }} JPY
+      </div>
+      <div class="card-action-block">
+        <div class="timer-box">
+          <div class="timer-label">Time till publication</div>
+          <div class="timer-val" id="timer-{{ v.id }}">{{ dynamic_seconds_left }}s</div>
+        </div>
+        <a href="{{ url_for('index_portal.switch_target', target_id=v.id) }}" class="detail-btn">
+          🔍 個別交渉・詳細ツリーへ
+        </a>
+      </div>
+    </div>
+
+  </div>
+  {% endfor %}
+
+  <!-- ログコンソール -->
+  <div class="terminal-panel">
+    <div class="terminal-title">[ SYSTEM ACTIVITY LOG & ENCRYPTION STREAM ]</div>
+    <div class="terminal-log">
+[11:41:57] [SYSTEM] Tor匿名ネットワーク接続完了。Qilinポータルノード 409 が正常に稼働中。
+[11:41:57] [INFO] SQLiteバックエンドからターゲットデータを正常に非同期取得しました。
+[11:41:58] [ALERT] 各被害組織に対する犯行声明および要求条件がダークウェブフィードに同期されました。
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>TOX SECURE CH: 7C35408411AEEB053CDBCEBAB167D7B22F1E66614E89DFCB62EE835416F60E1BCD699515</div>
+  <div>Qilin Ransomware Operations &bull; Onion Node #409</div>
+</footer>
+
+<script>
+let remainingSecs = {{ dynamic_seconds_left }};
+
+function updateAllTimers() {
+  if (remainingSecs > 0) {
+    remainingSecs--;
+  }
+  let h = Math.floor(remainingSecs / 3600);
+  let m = Math.floor((remainingSecs % 3600) / 60);
+  let s = remainingSecs % 60;
+  let timeStr = `${h.toString().padStart(2,'0')}h : ${m.toString().padStart(2,'0')}m : ${s.toString().padStart(2,'0')}s`;
+  
+  document.querySelectorAll('[id^="timer-"]').forEach(el => {
+    el.innerText = timeStr;
+  });
+}
+
+setInterval(updateAllTimers, 1000);
+updateAllTimers();
+</script>
+
+</body>
+</html>

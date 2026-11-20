@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberLab - Target IP Audit Center</title>
+    <style>
+        :root {
+            --bg-color: #050509;
+            --terminal-bg: #020205;
+            --card-bg: #0f101a;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+            --accent: #a855f7;
+            --accent-hover: #9333ea;
+            --border: #1e1b4b;
+            --success-text: #4ade80;
+            --error-text: #f87171;
+        }
+        body {
+            font-family: "Courier New", Consolas, monospace;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+        /* 画面全体の横幅を広めに調整して見やすく */
+        .container { width: 100%; max-width: 1250px; }
+        
+        h1 { font-size: 1.3rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; color: var(--accent); display: flex; justify-content: space-between; align-items: center; }
+        .back-link { font-size: 0.8rem; background: var(--border); color: var(--text-muted); padding: 0.3rem 0.6rem; border-radius: 4px; text-decoration: none; }
+        .back-link:hover { color: var(--text-main); background: var(--accent-hover); }
+
+        .card { background-color: var(--card-bg); padding: 1.5rem; border-radius: 6px; border: 1px solid var(--border); margin-bottom: 1.5rem; }
+        
+        /* ターゲットIP管理エリア */
+        .target-manager { display: flex; gap: 1rem; margin-bottom: 1rem; align-items: center; }
+        input { padding: 0.6rem; border-radius: 4px; border: 1px solid var(--border); background-color: var(--bg-color); color: var(--text-main); font-family: inherit; font-size: 0.9rem; flex: 1; }
+        button { padding: 0.6rem 1.2rem; background-color: var(--accent); color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-family: inherit; transition: background 0.2s; white-space: nowrap; }
+        button:hover { background-color: var(--accent-hover); }
+        .btn-danger { background-color: var(--error-text); }
+        .btn-danger:hover { background-color: #dc2626; }
+
+        .tag-container { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+        .ip-tag { background: #1e1b4b; border: 1px solid var(--accent); padding: 0.3rem 0.8rem; border-radius: 4px; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; }
+        .ip-tag span { cursor: pointer; color: var(--error-text); font-weight: bold; font-size: 1rem; }
+
+        /* 📊 テーブルのレイアウト崩れ防止と見やすさの強化 */
+        .table-container { max-height: 450px; overflow-y: auto; border: 1px solid var(--border); border-radius: 6px; background: var(--terminal-bg); }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left; table-layout: fixed; } /* 列幅を固定 */
+        th, td { padding: 0.8rem 0.6rem; border-bottom: 1px solid var(--border); overflow: hidden; text-overflow: ellipsis; vertical-align: middle; }
+        th { background-color: #0b0f19; color: var(--accent); position: sticky; top: 0; z-index: 10; }
+        tr:hover { background-color: rgba(168, 85, 247, 0.05); }
+
+        /* 各列の横幅を明示的に配分 */
+        th:nth-child(1), td:nth-child(1) { width: 15%; } /* 日時 */
+        th:nth-child(2), td:nth-child(2) { width: 14%; } /* アクセスIP */
+        th:nth-child(3), td:nth-child(3) { width: 9%;  } /* メソッド */
+        th:nth-child(4), td:nth-child(4) { width: 18%; } /* パス */
+        th:nth-child(5), td:nth-child(5) { width: 22%; } /* 詳細データ */
+        th:nth-child(6), td:nth-child(6) { width: 22%; } /* User-Agent */
+
+        .method-badge { background: #1e1b4b; color: var(--success-text); padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: bold; display: inline-block; text-align: center; }
+
+        .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
+        .status-dot { display: inline-block; width: 8px; height: 8px; background-color: var(--success-text); border-radius: 50%; margin-right: 4px; box-shadow: 0 0 6px var(--success-text); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            <span>$ cyberlab --target-ip-auditor</span>
+            <a href="/" class="back-link">[ ホームに戻る ]</a>
+        </h1>
+        
+        <!-- ターゲットIP管理カード -->
+        <div class="card">
+            <label style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">🎯 現在監視・記録している特定のIPアドレス一覧:</label>
+            <div class="target-manager">
+                <input type="text" id="newIpInput" placeholder="追加するIPアドレス (例: 192.168.6.20)">
+                <button type="button" onclick="addIpTarget()">IPを追加</button>
+            </div>
+            <div class="tag-container" id="ipTagContainer"></div>
+        </div>
+
+        <!-- ログ一覧カード -->
+        <div class="card">
+            <div class="toolbar">
+                <span><span class="status-dot"></span><strong>監視ログ一覧 (Real-time Audit Trail)</strong></span>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button type="button" onclick="loadLogs()" style="padding: 0.4rem 1rem; font-size: 0.8rem;">更新</button>
+                    <button type="button" class="btn-danger" onclick="clearLogs()" style="padding: 0.4rem 1rem; font-size: 0.8rem;">ログ全消去</button>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>日時</th>
+                            <th>アクセスIP</th>
+                            <th>メソッド</th>
+                            <th>パス</th>
+                            <th>詳細データ</th>
+                            <th>User-Agent</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logTableBody">
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: var(--text-muted);">ログを読み込み中...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadTargets() {
+            try {
+                let res = await fetch('/ip/api/ip/targets');
+                let ips = await res.json();
+                let container = document.getElementById('ipTagContainer');
+                container.innerHTML = '';
+
+                ips.forEach(ip => {
+                    let tag = document.createElement('div');
+                    tag.className = 'ip-tag';
+                    tag.innerHTML = `${ip} <span onclick="removeIpTarget('${ip}')" title="削除">&times;</span>`;
+                    container.appendChild(tag);
+                });
+            } catch (err) {
+                console.error("ターゲットIP取得エラー:", err);
+            }
+        }
+
+        async function addIpTarget() {
+            let input = document.getElementById('newIpInput');
+            let ip = input.value.trim();
+            if(!ip) return;
+
+            let res = await fetch('/ip/api/ip/targets', {
+                method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ip })
+            });
+            if(res.ok) {
+                input.value = '';
+                loadTargets();
+            }
+        }
+
+        async function removeIpTarget(ip) {
+            let res = await fetch('/ip/api/ip/targets', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ip })
+            });
+            if(res.ok) {
+                loadTargets();
+            }
+        }
+
+        async function loadLogs() {
+            try {
+                let res = await fetch('/ip/api/ip/logs');
+                let logs = await res.json();
+                let tbody = document.getElementById('logTableBody');
+                tbody.innerHTML = '';
+
+                if(logs.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">指定IPからのアクセス履歴はありません</td></tr>';
+                    return;
+                }
+
+                logs.forEach(log => {
+                    let details = '';
+                    if (log.query && Object.keys(log.query).length > 0) details += `Q: ${JSON.stringify(log.query)} `;
+                    if (log.body) details += `Body: ${JSON.stringify(log.body)}`;
+                    if (!details) details = '-';
+
+                    let tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td title="${log.timestamp}">${log.timestamp}</td>
+                        <td style="color: var(--accent); font-weight: bold;" title="${log.ip}">${log.ip}</td>
+                        <td><span class="method-badge">${log.method}</span></td>
+                        <td title="${log.path}">${log.path}</td>
+                        <td style="font-size: 0.75rem; color: #cbd5e1;" title="${details}">${details}</td>
+                        <td style="font-size: 0.75rem; color: var(--text-muted);" title="${log.user_agent}">${log.user_agent}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error("ログ取得エラー:", err);
+            }
+        }
+
+        async function clearLogs() {
+            if(!confirm("本当にすべてのログを消去しますか？")) return;
+            let res = await fetch('/ip/api/ip/clear', { method: 'POST' });
+            if(res.ok) {
+                loadLogs();
+            }
+        }
+
+        loadTargets();
+        loadLogs();
+        setInterval(loadLogs, 3000);
+    </script>
+</body>
+</html>

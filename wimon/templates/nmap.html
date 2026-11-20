@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberLab CLI - Nmap Port Scanner</title>
+    <style>
+        :root {
+            --bg-color: #050509;
+            --terminal-bg: #020205;
+            --card-bg: #0f101a;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+            --accent: #38bdf8; /* Nmapらしい青系のアクセントカラー */
+            --accent-hover: #0284c7;
+            --border: #1e1b4b;
+            --terminal-text: #38bdf8;
+            --success-text: #4ade80;
+            --warning-text: #facc15;
+            --error-text: #f87171;
+        }
+        body {
+            font-family: "Courier New", Consolas, monospace;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+        .container { width: 100%; max-width: 950px; }
+        h1 { font-size: 1.3rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; color: var(--accent); display: flex; justify-content: space-between; align-items: center; }
+        .back-link { font-size: 0.8rem; background: var(--border); color: var(--text-muted); padding: 0.3rem 0.6rem; border-radius: 4px; text-decoration: none; }
+        .back-link:hover { color: var(--text-main); background: var(--accent-hover); }
+
+        .card { background-color: var(--card-bg); padding: 1.5rem; border-radius: 6px; border: 1px solid var(--border); margin-bottom: 1.5rem; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } }
+
+        label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+        select, input { width: 100%; padding: 0.6rem; border-radius: 4px; border: 1px solid var(--border); background-color: var(--bg-color); color: var(--text-main); box-sizing: border-box; font-family: inherit; font-size: 0.9rem; }
+        
+        button { width: 100%; padding: 0.7rem; background-color: var(--accent); color: #020205; border: none; border-radius: 4px; font-size: 0.95rem; font-weight: bold; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        button:hover { background-color: var(--accent-hover); color: white; }
+        button:disabled { background-color: var(--border); color: var(--text-muted); cursor: not-allowed; }
+
+        .terminal-box { background-color: var(--terminal-bg); border: 1px solid var(--border); border-radius: 6px; padding: 1rem; min-height: 320px; max-height: 480px; overflow-y: auto; font-size: 0.85rem; color: var(--terminal-text); white-space: pre-wrap; line-height: 1.4; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
+        .status-bar { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem; display: flex; justify-content: space-between; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            <span>$ cyberlab-cli --nmap-scanner</span>
+            <a href="/" class="back-link">[ ホームに戻る ]</a>
+        </h1>
+        
+        <div class="card">
+            <form id="scanForm">
+                <div class="form-grid">
+                    <div>
+                        <label for="scanType">スキャンタイプ</label>
+                        <select id="scanType" name="scanType">
+                            {% for key, val in scan_types.items() %}
+                            <option value="{{ key }}">{{ val }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="ports">ポート指定 (例: 1-1024, 80)</label>
+                        <input type="text" id="ports" name="ports" value="1-1024">
+                    </div>
+                    <div>
+                        <label for="script">NSEスクリプト</label>
+                        <select id="script" name="script">
+                            {% for key, val in scripts.items() %}
+                            <option value="{{ key }}">{{ val }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" id="submitBtn">RUN NMAP SCAN (172.0.0.1)</button>
+            </form>
+        </div>
+
+        <div class="status-bar">
+            <span id="execStatus">ステータス: 待機中</span>
+            <span>Security: Sandboxed Network Enumeration</span>
+        </div>
+
+        <div class="terminal-box" id="terminalOutput">
+cyberlab@server:~$ オプションを設定して "RUN NMAP SCAN" を押してください。
+ターゲットは安全なサンドボックス（172.0.0.1）に固定されています。
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('scanForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const terminalOutput = document.getElementById('terminalOutput');
+        const execStatus = document.getElementById('execStatus');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const scan_type = document.getElementById('scanType').value;
+            const ports = document.getElementById('ports').value;
+            const script = document.getElementById('script').value;
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'SCANNING...';
+            execStatus.textContent = 'ステータス: スキャン実行中...';
+            terminalOutput.textContent = `cyberlab@server:~$ 実行中... (type: ${scan_type}, ports: ${ports}, script: ${script})\n`;
+
+            try {
+                const response = await fetch('/nmap/api/scan', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ scan_type, ports, script })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    terminalOutput.innerHTML += `<div style="color: var(--error-text);">[ERROR] ${data.error}</div>`;
+                    execStatus.textContent = 'ステータス: エラー';
+                } else {
+                    let html = `<div style="color: var(--warning-text); font-weight: bold;"># ${data.command}</div>`;
+                    html += `${data.output}\n`;
+                    terminalOutput.innerHTML = html;
+                    execStatus.textContent = 'ステータス: スキャン完了';
+                }
+            } catch (err) {
+                terminalOutput.innerHTML += `<div style="color: var(--error-text);">[COMMUNICATION ERROR] ${err.message}</div>`;
+                execStatus.textContent = 'ステータス: 通信エラー';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'RUN NMAP SCAN (172.0.0.1)';
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>

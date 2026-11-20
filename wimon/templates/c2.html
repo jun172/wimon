@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberLab - C2 & Ransomware Simulation Center</title>
+    <style>
+        :root {
+            --bg-color: #050509;
+            --terminal-bg: #020205;
+            --card-bg: #0f101a;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+            --accent: #ec4899;
+            --accent-hover: #db2777;
+            --border: #1e1b4b;
+            --terminal-text: #f472b6;
+            --success-text: #4ade80;
+            --warning-text: #facc15;
+            --error-text: #f87171;
+        }
+        body { font-family: "Courier New", Consolas, monospace; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 2rem; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 950px; }
+        h1 { font-size: 1.3rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; color: var(--accent); display: flex; justify-content: space-between; align-items: center; }
+        .back-link { font-size: 0.8rem; background: var(--border); color: var(--text-muted); padding: 0.3rem 0.6rem; border-radius: 4px; text-decoration: none; }
+        .back-link:hover { color: var(--text-main); background: var(--accent-hover); }
+        .card { background-color: var(--card-bg); padding: 1.5rem; border-radius: 6px; border: 1px solid var(--border); margin-bottom: 1.5rem; }
+        .form-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+        select, input { width: 100%; padding: 0.6rem; border-radius: 4px; border: 1px solid var(--border); background-color: var(--bg-color); color: var(--text-main); box-sizing: border-box; font-family: inherit; font-size: 0.9rem; }
+        button { width: 100%; padding: 0.7rem; background-color: var(--accent); color: #020205; border: none; border-radius: 4px; font-size: 0.95rem; font-weight: bold; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        button:hover { background-color: var(--accent-hover); color: white; }
+        .btn-danger { background-color: #ef4444; color: white; }
+        .btn-danger:hover { background-color: #dc2626; }
+        .terminal-box { background-color: var(--terminal-bg); border: 1px solid var(--border); border-radius: 6px; padding: 1rem; min-height: 250px; max-height: 350px; overflow-y: auto; font-size: 0.85rem; color: var(--terminal-text); white-space: pre-wrap; line-height: 1.4; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); margin-bottom: 1rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; font-size: 0.85rem; }
+        th, td { border: 1px solid var(--border); padding: 0.5rem; text-align: left; }
+        th { background-color: #0b0f19; color: var(--accent); }
+        ul { margin: 0; padding-left: 1.2rem; color: var(--text-muted); font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            <span>$ cyberlab --c2-ransomware-simulation</span>
+            <a href="/" class="back-link">[ ホームに戻る ]</a>
+        </h1>
+        <div class="card">
+            <label>ターゲット環境・サンドボックス状況</label>
+            <table>
+                <thead>
+                    <tr><th>Node ID</th><th>Environment</th><th>Status</th></tr>
+                </thead>
+                <tbody id="agentTableBody">
+                    <tr><td>target_node_web</td><td>Local Flask Sandbox</td><td style="color: var(--success-text);">Active</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card">
+            <label>サンドボックスファイル管理 (./sandbox)</label>
+            <ul id="fileList" style="margin-bottom: 1rem;">
+                {% for f in files %}
+                <li>{{ f }}</li>
+                {% endfor %}
+            </ul>
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <button type="button" class="btn-danger" onclick="lockFiles()">ファイルを暗号化する (ロック)</button>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <input type="text" id="keyInput" placeholder="復元キー (secret.keyの中身)">
+                <button type="button" onclick="unlockFiles()" style="background-color: var(--success-text); color: #020205;">復元する</button>
+            </div>
+        </div>
+        <div class="card">
+            <form id="c2Form">
+                <div class="form-grid">
+                    <div>
+                        <label for="command">指令コマンド選択</label>
+                        <select id="command" name="command">
+                            <option value="AUDIT_SYS">AUDIT_SYS (システム環境自動監査)</option>
+                            <option value="whoami">whoami (ユーザー名確認)</option>
+                            <option value="uname -a">uname -a (OSカーネル情報確認)</option>
+                            <option value="ps aux">ps aux (プロセス一覧確認)</option>
+                            <option value="AUTO_LOGS">AUTO_LOGS (ディスク・ネットワーク情報一括収集)</option>
+                            <option value="lock_files">[!] ランサムウェア暗号化コマンド実行</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>&nbsp;</label>
+                        <button type="submit" id="submitBtn">SEND COMMAND</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="terminal-box" id="terminalOutput">
+[CyberLab C2 Console Initialized]
+コマンドを選択して実行するか、上のサンドボックスでファイルの暗号化/復元を体験できます。
+        </div>
+    </div>
+   <script>
+        const form = document.getElementById('c2Form');
+        const terminalOutput = document.getElementById('terminalOutput');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const command = document.getElementById('command').value;
+            try {
+                // 修正: Blueprintのルーティングパスに合わせる
+                const response = await fetch('/api/c2/send_command', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ command })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    terminalOutput.innerHTML += `\n\n[EXECUTE] COMMAND: ${data.command}\n${data.output}\n----------------------------------`;
+                    if(command === 'lock_files') {
+                        setTimeout(() => location.reload(), 1500); // 暗号化時は自動リロード
+                    }
+                } else {
+                    terminalOutput.innerHTML += `\n[ERROR] ${data.error || 'エラーが発生しました'}`;
+                }
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+            } catch (err) {
+                alert("通信エラーが発生しました。");
+            }
+        });
+
+        async function lockFiles() {
+            if(!confirm("サンドボックス内のファイルを暗号化しますか？")) return;
+            // 修正: パスを /api/lock に合わせる
+            let res = await fetch('/api/lock', {method: 'POST'});
+            let data = await res.json();
+            terminalOutput.innerHTML += `\n\n[!] 暗号化されました: ${data.message}`;
+            alert(data.message);
+            location.reload();
+        }
+
+        async function unlockFiles() {
+            let key = document.getElementById('keyInput').value;
+            // 修正: パスを /api/unlock に合わせる
+            let res = await fetch('/api/unlock', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({key})
+            });
+            let data = await res.json();
+            if(res.ok) {
+                terminalOutput.innerHTML += `\n\n[+] 復元完了: ${data.message}`;
+                alert(data.message);
+                location.reload();
+            } else {
+                alert("エラー: " + (data.message || '復元に失敗しました'));
+            }
+        }
+    </script>
+</body>
+</html>

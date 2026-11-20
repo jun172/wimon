@@ -1,0 +1,989 @@
+[
+  {
+    "timestamp": "2026-11-17 15:06:56",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/brute/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 15:06:54",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/login",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 15:06:51",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/AUTH/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 15:06:50",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 15:06:48",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 15:05:49",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "admin_sec",
+      "secret_pass": "Cyber2026"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 15:05:43",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "admin_sec",
+      "secret_pass": "junjun"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 15:05:39",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/brute/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 15:05:35",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/login",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 15:05:32",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/AUTH/",
+    "query": {},
+    "body": {
+      "username": "jun",
+      "password": "junjun"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 15:05:24",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/AUTH/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 15:05:23",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:59:33",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "admin_sec",
+      "secret_pass": "111111111111"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:59:24",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/brute/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:59:21",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:59:19",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:59:13",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:58:48",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "admin_sec",
+      "secret_pass": "jun1026com"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:58:39",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/brute/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:58:38",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:58:35",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "admin_sec",
+      "secret_pass": "koube"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:57:10",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "admin_sec",
+      "secret_pass": "koube"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:57:06",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/brute/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:57:05",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:56:55",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "admin_sec",
+      "secret_pass": "koube9999999"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:54:56",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "admin_sec",
+      "secret_pass": "koube9999999"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:54:46",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "admin_sec",
+      "secret_pass": "koubedensh"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:54:39",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "admin_sec",
+      "secret_pass": "Cyber2026"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:54:36",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "admin_sec",
+      "secret_pass": "koubedenshse"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:53:00",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "admin_sec",
+      "secret_pass": "jun1026com"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:52:48",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "admin_sec",
+      "secret_pass": "jun1026.com"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:52:25",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "admin_sec",
+      "secret_pass": "Jun1026com"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:51:59",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "admin_sec",
+      "secret_pass": "Jun1026R"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:51:34",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/brute/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:50:42",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/AUTH/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:50:41",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:49:07",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "target_system",
+      "secret_pin": "9999"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:48:58",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "target_system",
+      "secret_pin": "0001"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:48:42",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "target_system",
+      "secret_pin": "6832"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:48:18",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "target_system",
+      "secret_pin": "1111"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:47:59",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "JUN",
+      "secret_pin": "4545"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:47:33",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "target_system",
+      "secret_pin": "5555"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:47:25",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "target_system",
+      "secret_pin": "2025"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:47:11",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/brute/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:47:08",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/login",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:47:04",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/AUTH/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:47:02",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:45:36",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/login",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:45:33",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/brute/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:45:24",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "target_id": "target_system",
+      "secret_pin": "1026"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:45:07",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/brute/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:45:06",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/AUTH/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:45:03",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:44:46",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/brute/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:44:44",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/AUTH/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:44:43",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:39:22",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/brute/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:39:02",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/brute/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:38:47",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/brute/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:38:39",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "username": "admin_root",
+      "secret_code": "7942"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:38:36",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/brute/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:38:30",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/login",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:38:27",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/brute/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:38:21",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/brute/",
+    "query": {},
+    "body": {
+      "username": "admin_root",
+      "secret_code": "7942"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:38:15",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/brute/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:38:15",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/brute",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:38:13",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/AUTH/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:38:12",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:38:00",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/AUTH/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:24:57",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/brute",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:24:50",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/login",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:21:53",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/brute",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:21:51",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/AUTH/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:20:59",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/AUTH/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:20:59",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/AUTH",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:18:44",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/favicon.ico",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:18:43",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/DARK/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:18:42",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:17:20",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/favicon.ico",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:17:17",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/DARK/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:17:15",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:15:28",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/favicon.ico",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:15:25",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/DARK/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 14:15:08",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/nc/api/run",
+    "query": {},
+    "body": {
+      "mode": "banner",
+      "port": "80"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 13:50:14",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/nc/api/run",
+    "query": {},
+    "body": {
+      "mode": "scan",
+      "port": "80"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 13:50:11",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/nc/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 13:50:10",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 13:50:09",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 13:48:55",
+    "ip": "192.168.6.14",
+    "method": "POST",
+    "path": "/nc/api/run",
+    "query": {},
+    "body": {
+      "mode": "scan",
+      "port": "80"
+    },
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 13:47:27",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/nc/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 13:47:17",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/nc/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 13:47:11",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/namp/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 13:47:08",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/nc/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 13:47:06",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/namp/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 13:46:54",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/ddos/",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 13:46:51",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/ip/api/ip/logs",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 13:46:48",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/ip/api/ip/logs",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 13:46:45",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/ip/api/ip/logs",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 13:46:42",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/ip/api/ip/logs",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  },
+  {
+    "timestamp": "2026-11-17 13:46:29",
+    "ip": "192.168.6.14",
+    "method": "GET",
+    "path": "/ip/api/ip/logs",
+    "query": {},
+    "body": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  }
+]

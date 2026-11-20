@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>CyberLab - White Hacker</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@200;400&display=swap" rel="stylesheet">
+<style>
+/* === GLOBAL STYLE === */
+body {
+    margin: 0;
+    font-family: "Roboto Mono", monospace;
+    background: linear-gradient(135deg, #e3f2fd, #f0f4f8); /* 明るめブルー */
+    color: #1a1a1a;
+    overflow-x: hidden;
+}
+
+/* HEADER */
+.header-title {
+    text-align: center;
+    padding: 40px 0 20px;
+    font-size: 36px;
+    font-weight: bold;
+    color: #1565c0;
+}
+
+/* CARD GRID */
+.container {
+    width: 90%;
+    margin: 0 auto 50px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+/* CARD */
+.card {
+    background: linear-gradient(145deg, #ffffff, #e1f5fe);
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: 0.3s;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+.card h2, .card h3 {
+    margin: 0 0 10px;
+    font-size: 20px;
+    color: #0288d1;
+}
+.card p {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 15px;
+    flex-grow: 1;
+}
+.card a {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #03a9f4;
+    color: #fff;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+.card a:hover {
+    background: #039be5;
+}
+
+/* ⚠️ ダークウェブ・脅迫ポータル専用の特別カードスタイル */
+.card.dark-card {
+    background: linear-gradient(145deg, #0d121b, #04060a);
+    border: 1px solid #ff3366;
+}
+.card.dark-card h2 {
+    color: #ff3366;
+}
+.card.dark-card p {
+    color: #a5d6a7;
+}
+.card.dark-card a {
+    background: #ff3366;
+}
+.card.dark-card a:hover {
+    background: #e6004c;
+}
+
+/* FOOTER */
+.footer {
+    text-align: center;
+    padding: 25px;
+    font-size: 14px;
+    color: #666;
+}
+</style>
+</head>
+<body>
+
+<div class="header-title">CyberLab - White Hacker</div>
+
+<div class="container">
+    <div class="card">
+        <h2>SQL インジェクション</h2>
+        <p>データベースを改ざん</p>
+        <a href="/SQL/login">Start</a>
+    </div>
+    <div class="card">
+        <h2>XSS</h2>
+        <p>記述言語であるHTMLに悪質なスクリプトを埋め込む攻撃</p>
+        <a href="/XSS/">Start</a>
+    </div>
+    <div class="card">
+        <h2>CSRF</h2>
+        <p>他人の操作を勝手に実行させる</p>
+        <a href="/CSRF/CSRF.html">Start</a>
+    </div>
+    <div class="card">
+        <h2>Directory Traversal</h2>
+        <p>意図しないファイルにアクセスできてしまう</p>
+        <a href="/DT">Start</a>
+    </div>
+    <div class="card">
+        <h2>ワンクリック詐欺</h2>
+        <p>多額の料金の支払いを求められる詐欺</p>
+        <a href="/ONE">Start</a>
+    </div>
+    <div class="card">
+        <h2>ファイルアップロード攻撃</h2>
+        <p>アップロードファイルを悪用してサーバーを乗っ取る攻撃</p>
+        <a href="/FU">Start</a>
+    </div>
+    <div class="card">
+        <h2>ダークウェブマーケット</h2>
+        <p>違法な取引</p>
+        <a href="{{ url_for('DARK.market') }}">Start</a>
+    </div>
+    <div class="card">
+        <h2>4桁PIN ブルートフォース</h2>
+        <p>4桁のPINコードを高速総当たりで解読</p>
+        <a href="/brute/">テストをはじめる</a>
+    </div>
+    <div class="card">
+        <h2>HTTPスニッフィング体験</h2>
+        <p>非暗号化通信でパスワードが平文で傍受されるリスクを学ぶ</p>
+        <a href="/sniffing/">テストをはじめる</a>
+    </div>
+    <div class="card">
+        <h2>Gobuster 隠しパススキャン</h2>
+        <p>ディレクトリや隠しファイルを高速列挙するツール</p>
+        <a href="/gobuster/">テストをはじめる</a>
+    </div>
+    <div class="card">
+        <h2>サーバーの空きポート一括調査</h2>
+        <p>「どの扉（ポート）が開いているか？」スキャンして調べるツールです。</p>
+        <a href="/namp/">調査をはじめる</a>
+    </div>
+    <div class="card">
+        <h2>特定のポートへ接続テスト</h2>
+        <p>「応答が返ってくるか？」通信テストツールです。</p>
+        <a href="/nc/">テストをはじめる</a>
+    </div>
+    <div class="card">
+        <h2>サーバーに対して負荷させます。</h2>
+        <p>サーバーを破壊・ダウンさせるための過負荷テスト</p>
+        <a href="/ddos/">テストをはじめる</a>
+    </div>
+    <div class="card">
+        <h2>C2サーバーです。</h2>
+        <p>マルウェアに使われる仕組みです。(指令役)</p>
+        <a href="/c2/">テストをはじめる</a>
+    </div>
+    <div class="card">
+        <h3>C2 オペレーターコンソール</h3>
+        <p>マルウェアの指令サーバー（C2）の仕組みを模擬し、エージェントへの指令と結果確認を行います。(受信用)</p>
+        <a href="/c1/">ダッシュボードを開く</a>
+    </div>
+    <div class="card">
+        <h3>ネット上の住所</h3>
+        <p>どの住所（IP）の端末から、いつ、どのアドレスや機能にアクセスがあったか</p>
+        <a href="/ip/">IPログを確認する</a>
+    </div>
+    <div class="card">
+        <h3>認証・ログイン検証</h3>
+        <p>認証システムの仕組みや脆弱性を検証するモジュール</p>
+        <a href="/AUTH/">テストをはじめる</a>
+    </div>
+
+    <div class="card dark-card">
+        <h2>被害者側の脅迫ポータル</h2>
+        <p>学校・企業の機密データ流出と身代金要求を模擬したインシデント演習モジュール</p>
+        <a href="/index/">ポータルを開く</a>
+    </div>
+</div>
+
+<div class="footer">※教育目的のみ。攻撃利用禁止。</div>
+
+</body>
+</html>
