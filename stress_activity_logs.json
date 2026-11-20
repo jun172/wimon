@@ -1,0 +1,35 @@
+[
+  {
+    "timestamp": "2026-11-18 11:17:24",
+    "target_url": "http://192.168.6.24/",
+    "total_requests": 50,
+    "concurrency": 10,
+    "total_time_sec": 5.26,
+    "success_count": 0,
+    "fail_count": 50,
+    "avg_latency_ms": 1040.75,
+    "requests_per_sec": 9.51
+  },
+  {
+    "timestamp": "2026-11-17 12:06:06",
+    "target_url": "http://192.168.6.24/",
+    "total_requests": 200,
+    "concurrency": 20,
+    "total_time_sec": 4.21,
+    "success_count": 200,
+    "fail_count": 0,
+    "avg_latency_ms": 153.97,
+    "requests_per_sec": 47.51
+  },
+  {
+    "timestamp": "2026-11-17 12:05:23",
+    "target_url": "http://192.168.6.24/",
+    "total_requests": 50,
+    "concurrency": 10,
+    "total_time_sec": 2.67,
+    "success_count": 50,
+    "fail_count": 0,
+    "avg_latency_ms": 289.63,
+    "requests_per_sec": 18.71
+  }
+]

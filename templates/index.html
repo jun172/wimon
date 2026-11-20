@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>LOCKBIT & QILIN // ENTERPRISE CYBER INCIDENT DRILL PORTAL</title>
+<style>
+:root {
+  --bg-dark: #050608;
+  --bg-card: #0b0f17;
+  --bg-panel: #111722;
+  --border-color: #1f2937;
+  --accent-red: #ff1f3d;
+  --accent-orange: #ff7b00;
+  --accent-cyan: #00f0ff;
+  --accent-green: #00ff66;
+  --text-main: #b1bac4;
+  --text-muted: #6e7681;
+  --text-bright: #ffffff;
+}
+
+body {
+  background: var(--bg-dark);
+  color: var(--text-main);
+  font-family: "Courier New", Courier, monospace;
+  margin: 0; padding: 0;
+  overflow-x: hidden;
+}
+
+/* CRT SCANLINE */
+body::after {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.5) 50%);
+  background-size: 100% 3px;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* TOP BROWSER BAR */
+.browser-bar {
+  background: #080b10;
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+.url-bar {
+  background: var(--bg-dark);
+  border: 1px solid #30363d;
+  color: var(--accent-red);
+  padding: 5px 12px;
+  border-radius: 4px;
+  flex: 1;
+  font-family: monospace;
+  letter-spacing: 0.5px;
+}
+
+/* HEADER */
+.main-header {
+  background: #080b10;
+  border-bottom: 2px solid var(--accent-red);
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 0 30px rgba(255,31,61,0.2);
+}
+.header-title {
+  font-size: 1.15rem;
+  color: var(--text-bright);
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.status-badge {
+  background: rgba(255,31,61,0.15);
+  border: 1px solid var(--accent-red);
+  color: var(--accent-red);
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: bold;
+}
+
+/* TARGET SELECTOR BAR */
+.selector-bar {
+  background: #060910;
+  padding: 12px 40px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 0.82rem;
+}
+.selector-select {
+  background: #0e131d;
+  border: 1px solid var(--border-color);
+  color: var(--text-bright);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-family: monospace;
+  outline: none;
+}
+
+/* METRICS GRID */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  padding: 25px 40px;
+}
+.metric-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-top: 3px solid var(--accent-red);
+  padding: 15px;
+  text-align: center;
+  border-radius: 4px;
+}
+.metric-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.metric-val {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--text-bright);
+}
+
+/* CONTAINER */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px 40px 40px;
+}
+
+/* STATEMENT BOX */
+.drill-statement {
+  background: linear-gradient(135deg, #160608, #030406);
+  border: 1px solid rgba(255,31,61,0.4);
+  border-left: 5px solid var(--accent-red);
+  padding: 25px;
+  border-radius: 6px;
+  margin-bottom: 25px;
+}
+.drill-statement-title {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: var(--accent-red);
+  margin-bottom: 12px;
+}
+.drill-statement-body {
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: #c9d1d9;
+  white-space: pre-wrap;
+}
+
+/* TWO COLUMN SECTION */
+.grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  margin-bottom: 25px;
+}
+.panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 20px;
+}
+.panel-title {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: var(--accent-cyan);
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* MITRE LOG CONTAINER */
+.mitre-log {
+  background: #030406;
+  border: 1px solid #1a2332;
+  padding: 15px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: var(--accent-green);
+  line-height: 1.6;
+  height: 240px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
+/* CHAT AREA */
+.chat-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.chat-tab {
+  background: #161b22;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  padding: 5px 12px;
+  font-size: 0.75rem;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.chat-tab.active {
+  background: var(--accent-cyan);
+  color: #000;
+  font-weight: bold;
+  border-color: var(--accent-cyan);
+}
+.chat-box {
+  background: #030406;
+  border: 1px solid #1a2332;
+  padding: 15px;
+  border-radius: 4px;
+  height: 140px;
+  overflow-y: auto;
+  font-size: 0.78rem;
+  color: #ff7b00;
+  margin-bottom: 12px;
+  white-space: pre-wrap;
+}
+.chat-input-row {
+  display: flex;
+  gap: 10px;
+}
+.chat-input {
+  background: #0e131d;
+  border: 1px solid var(--border-color);
+  color: var(--text-bright);
+  padding: 8px 12px;
+  border-radius: 4px;
+  flex: 1;
+  font-family: monospace;
+  font-size: 0.8rem;
+  outline: none;
+}
+.send-btn {
+  background: var(--accent-orange);
+  color: #000;
+  border: none;
+  font-weight: bold;
+  padding: 0 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: monospace;
+}
+
+/* FILE TREE */
+.file-tree-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 20px;
+  margin-bottom: 25px;
+}
+.file-tree-content {
+  background: #030406;
+  border: 1px solid #1a2332;
+  padding: 15px;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  color: var(--accent-cyan);
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+/* FOOTER BAR */
+.bottom-footer {
+  background: #030406;
+  border-top: 1px solid var(--border-color);
+  padding: 15px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.footer-timer {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--accent-red);
+  font-family: monospace;
+}
+</style>
+</head>
+<body>
+
+<!-- BROWSER BAR -->
+<div class="browser-bar">
+  <span>🔒 Tor Browser // Onion Circuit Active</span>
+  <div class="url-bar">http://lockbitqilin73v2az6...onion/enterprise-incident-drill-apex-2026</div>
+</div>
+
+<!-- HEADER -->
+<div class="main-header">
+  <div class="header-title">LOCKBIT & QILIN // ENTERPRISE CYBER INCIDENT DRILL PORTAL</div>
+  <div class="status-badge">▲ 状況：ハイブリッド環境の完全制圧・データ全抽出完了</div>
+</div>
+
+<!-- SELECTOR BAR -->
+<div class="selector-bar">
+  <span>🎯 標的組織の切り替え:</span>
+  <select class="selector-select" onchange="if(this.value) location.href='/target/' + this.value;">
+    {% for t in targets %}
+    <option value="{{ t.id }}" {% if t.id == portal.id %}selected{% endif %}>{{ t.name }} ({{ t.industry }})</option>
+    {% endfor %}
+  </select>
+  <span style="color: var(--text-muted); font-size: 0.78rem; margin-left: auto;">&bull; データベース (portal.db) から動的に情報をロード中</span>
+</div>
+
+<!-- METRICS -->
+<div class="metrics-grid">
+  <div class="metric-box">
+    <div class="metric-label">暗号化サーバー数</div>
+    <div class="metric-val" style="color: var(--accent-orange);">{{ portal.encrypted_servers }} 台</div>
+  </div>
+  <div class="metric-box">
+    <div class="metric-label">データ流出量 (EXFILTRATED)</div>
+    <div class="metric-val" style="color: var(--accent-cyan);">{{ portal.data_size }}</div>
+  </div>
+  <div class="metric-box">
+    <div class="metric-label">要求身代金 (JPY)</div>
+    <div class="metric-val" style="color: var(--accent-red);">{{ portal.ransom_amount }}</div>
+  </div>
+  <div class="metric-box">
+    <div class="metric-label">インシデント深刻度</div>
+    <div class="metric-val" style="color: var(--accent-red);">{{ portal.critical_level }}</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 脅迫文・声明文 -->
+  <div class="drill-statement">
+    <div class="drill-statement-title">[!] 経営陣・CSIRT 宛てに緊急通知: {{ portal.name }}</div>
+    <div class="drill-statement-body">{{ portal.statement }}</div>
+  </div>
+
+  <!-- 2カラム: MITREログ ＆ リアルタイム交渉チャット -->
+  <div class="grid-2col">
+    
+    <!-- MITRE ATT&CK ログ -->
+    <div class="panel">
+      <div class="panel-title">
+        <span>🛡️ フォレンジック・侵入プロセスログ (MITRE ATT&CK)</span>
+        <span style="color: var(--accent-red);">[CRITICAL]</span>
+      </div>
+      <div class="mitre-log">
+[+] Target: {{ portal.name }}
+[+] Breach Date: {{ portal.breach_date }}
+[+] T1200 - Hardware Additions: Unsecured physical network drop in conference room.
+[+] T1550 - Use Alternate Authentication Material: AD Credential Dumping & Domain Controller (DC) takeover.
+[+] T1486 - Data Encrypted for Impact: Local NAS & file servers locked with custom extension.
+[+] T1567 - Exfiltration Over Web Service: S3 Bucket & Azure Blob fully siphoned ({{ portal.data_size }}).
+[+] T1490 - Inbuilt Backup Deletion: VSS shadows and immutable cloud snapshots purged.
+[+] Status: Double Extortion Enforced. Awaiting C-Level Response.
+      </div>
+    </div>
+
+    <!-- 攻撃者とのリアルタイム交渉シミュレーション -->
+    <div class="panel">
+      <div class="panel-title">
+        <span>💬 攻撃者とのリアルタイム交渉シミュレーション (Live Chat)</span>
+      </div>
+      <div class="chat-tabs">
+        <div class="chat-tab active">チャット対話</div>
+        <div class="chat-tab">対応ガイドライン</div>
+        <div class="chat-tab">緊急アクション</div>
+      </div>
+      <div class="chat-box">[Qilin/LockBit Bot]: {{ portal.name }}の機密情報はすべて我々の手にある。早く指示に従い金を払わなければ、すべてのデータを公表する。</div>
+      <div class="chat-input-row">
+        <input type="text" class="chat-input" placeholder="交渉担当者としての返答を入力..." />
+        <button class="send-btn">送信</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 抽出された機密ファイルツリー -->
+  <div class="file-tree-box">
+    <div style="font-size: 0.8rem; font-weight: bold; color: var(--accent-cyan); margin-bottom: 10px;">
+      📂 抽出された機密ファイル構成ツリー (Exfiltrated Structure)
+    </div>
+    <div class="file-tree-content">{{ portal.file_tree }}</div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="bottom-footer">
+  <div>LOCKBIT & QILIN CYBER DRILL SIMULATION ENVIRONMENT &bull; FOR AUTHORIZED RED TEAM TRAINING ONLY</div>
+  <div style="text-align: right;">
+    <div style="font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase;">Public Leak Countdown Timer</div>
+    <div class="footer-timer" id="countdown-timer">{{ portal.dynamic_seconds_left }}s</div>
+  </div>
+</div>
+
+<script>
+let remainingSecs = {{ portal.dynamic_seconds_left }};
+
+function updateTimer() {
+  if (remainingSecs > 0) {
+    remainingSecs--;
+  }
+  let h = Math.floor(remainingSecs / 3600);
+  let m = Math.floor((remainingSecs % 3600) / 60);
+  let s = remainingSecs % 60;
+  document.getElementById('countdown-timer').innerText = `${h.toString().padStart(2,'0')}h : ${m.toString().padStart(2,'0')}m : ${s.toString().padStart(2,'0')}s`;
+}
+
+setInterval(updateTimer, 1000);
+updateTimer();
+</script>
+
+</body>
+</html>

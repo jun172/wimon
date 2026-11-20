@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberLab - C1 Target Agent Sandbox</title>
+    <style>
+        :root {
+            --bg-color: #050509;
+            --terminal-bg: #020205;
+            --card-bg: #0f101a;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+            --accent: #38bdf8;
+            --accent-hover: #0284c7;
+            --border: #1e1b4b;
+            --terminal-text: #7dd3fc;
+            --success-text: #4ade80;
+            --error-text: #f87171;
+        }
+        body { font-family: "Courier New", Consolas, monospace; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 2rem; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 950px; }
+        h1 { font-size: 1.3rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; color: var(--accent); display: flex; justify-content: space-between; align-items: center; }
+        .back-link { font-size: 0.8rem; background: var(--border); color: var(--text-muted); padding: 0.3rem 0.6rem; border-radius: 4px; text-decoration: none; }
+        .back-link:hover { color: var(--text-main); background: var(--accent-hover); }
+        .card { background-color: var(--card-bg); padding: 1.5rem; border-radius: 6px; border: 1px solid var(--border); margin-bottom: 1.5rem; }
+        label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+        button { width: 100%; padding: 0.7rem; background-color: var(--accent); color: #020205; border: none; border-radius: 4px; font-size: 0.95rem; font-weight: bold; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        button:hover { background-color: var(--accent-hover); color: white; }
+        .btn-danger { background-color: #ef4444; color: white; }
+        .btn-danger:hover { background-color: #dc2626; }
+        .terminal-box { background-color: var(--terminal-bg); border: 1px solid var(--border); border-radius: 6px; padding: 1rem; min-height: 220px; max-height: 320px; overflow-y: auto; font-size: 0.85rem; color: var(--terminal-text); white-space: pre-wrap; line-height: 1.4; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); margin-bottom: 1rem; }
+        ul { margin: 0; padding-left: 1.2rem; color: var(--text-muted); font-size: 0.85rem; }
+        input { width: 100%; padding: 0.6rem; border-radius: 4px; border: 1px solid var(--border); background-color: var(--bg-color); color: var(--text-main); box-sizing: border-box; font-family: inherit; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            <span>$ cyberlab --c1-target-agent-node</span>
+            <a href="/" class="back-link">[ ホームに戻る ]</a>
+        </h1>
+        <div class="card">
+            <label>ターゲット環境情報 (Sandbox Node)</label>
+            <div id="targetInfo" style="font-size: 0.85rem; color: var(--success-text);">情報を取得中...</div>
+        </div>
+        <div class="card">
+            <label>サンドボックス内ファイル ({{ sandbox }})</label>
+            <ul id="fileList" style="margin-bottom: 1rem;">
+                {% for f in files %}
+                <li>{{ f }}</li>
+                {% endfor %}
+            </ul>
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <button type="button" class="btn-danger" onclick="lockFiles()">ファイルを暗号化する (ロック)</button>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <input type="text" id="keyInput" placeholder="復元キーを入力">
+                <button type="button" onclick="unlockFiles()" style="background-color: var(--success-text); color: #020205;">復元する</button>
+            </div>
+        </div>
+        <div class="card">
+            <label>エージェント自己テスト用コマンド実行</label>
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
+                <input type="text" id="customCmd" value="whoami">
+                <button type="button" onclick="runCommand()">EXECUTE</button>
+            </div>
+        </div>
+        <div class="terminal-box" id="terminalOutput">
+[C1 Agent Node Initialized]
+ターゲット端末としてのサンドボックス・ファイル保護状態を監視・操作できます。
+        </div>
+    </div>
+
+    <script>
+        const terminalOutput = document.getElementById('terminalOutput');
+
+        async function fetchStatus() {
+            try {
+                let res = await fetch('/c1/api/status');
+                let data = await res.json();
+                document.getElementById('targetInfo').innerHTML = 
+                    `OS: ${data.system} ${data.release} | User: ${data.current_user} | Root: ${data.is_elevated_root} | Dir: ${data.working_directory}`;
+            } catch (err) {
+                document.getElementById('targetInfo').innerHTML = '<span style="color: var(--error-text);">ステータスの取得に失敗しました</span>';
+            }
+        }
+        fetchStatus();
+
+        async function runCommand() {
+            let command = document.getElementById('customCmd').value;
+            if (!command) return;
+            
+            terminalOutput.innerHTML += `\n\n$ ${command}`;
+            try {
+                let res = await fetch('/c1/api/execute', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ command })
+                });
+                let data = await res.json();
+                if (res.ok) {
+                    terminalOutput.innerHTML += `\n${data.output}`;
+                } else {
+                    terminalOutput.innerHTML += `\n[ERROR] ${data.error}`;
+                }
+            } catch (err) {
+                terminalOutput.innerHTML += `\n[COMMUNICATION ERROR] ${err.message}`;
+            }
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        }
+
+        async function lockFiles() {
+            if(!confirm("サンドボックス内のファイルを暗号化しますか？")) return;
+            let res = await fetch('/c1/api/lock', {method: 'POST'});
+            let data = await res.json();
+            alert(data.message);
+            location.reload();
+        }
+
+        async function unlockFiles() {
+            let key = document.getElementById('keyInput').value;
+            let res = await fetch('/c1/api/unlock', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({key})
+            });
+            let data = await res.json();
+            if(res.ok) {
+                alert(data.message);
+                location.reload();
+            } else {
+                alert("エラー: " + data.message);
+            }
+        }
+    </script>
+</body>
+</html>
