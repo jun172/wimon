@@ -11,7 +11,7 @@
             --card-bg: #0f101a;
             --text-main: #f8fafc;
             --text-muted: #64748b;
-            --accent: #f59e0b; /* オレンジ/黄色のアクセント */
+            --accent: #f59e0b;
             --accent-hover: #d97706;
             --border: #1e1b4b;
             --terminal-text: #fbbf24;
@@ -45,18 +45,17 @@
         button:hover { background-color: var(--accent-hover); color: white; }
         button:disabled { background-color: var(--border); color: var(--text-muted); cursor: not-allowed; }
 
-        /* プリセットボタンエリア */
         .preset-group { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
         .preset-btn { background: #1e1b4b; color: var(--text-muted); border: 1px solid var(--border); padding: 0.3rem 0.6rem; font-size: 0.75rem; border-radius: 4px; cursor: pointer; width: auto; font-family: inherit; transition: all 0.2s; }
         .preset-btn:hover { background: var(--accent); color: #020205; }
 
-        /* 機能解説インフォボックス */
         .info-box { background-color: #1c140b; border-left: 4px solid var(--accent); padding: 0.75rem 1rem; font-size: 0.82rem; color: #cbd5e1; margin-bottom: 1.2rem; line-height: 1.5; }
         .info-box strong { color: var(--text-main); }
 
-        .terminal-box { background-color: var(--terminal-bg); border: 1px solid var(--border); border-radius: 6px; padding: 1rem; min-height: 280px; max-height: 420px; overflow-y: auto; font-size: 0.85rem; color: var(--terminal-text); white-space: pre-wrap; line-height: 1.4; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
+        .terminal-box { background-color: var(--terminal-bg); border: 1px solid var(--border); border-radius: 6px; padding: 1rem; min-height: 280px; max-height: 420px; overflow-y: auto; font-size: 0.85rem; color: var(--terminal-text); white-space: pre-wrap; word-break: break-word; line-height: 1.4; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
         .status-bar { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; }
         .status-dot { display: inline-block; width: 8px; height: 8px; background-color: var(--success-text); border-radius: 50%; margin-right: 4px; box-shadow: 0 0 6px var(--success-text); }
+        .err-line { color: var(--error-text); }
     </style>
 </head>
 <body>
@@ -67,13 +66,11 @@
         </h1>
         
         <div class="card">
-            <!-- ツール解説 -->
             <div class="info-box">
-                <strong>非同期ストレステスト機能：</strong> Webサーバーの可用性や負荷耐性を検証するためのツールです。安全のため、ターゲットはローカルサンドボックスに完全固定されています。<br>
+                <strong>非同期ストレステスト機能：</strong> Webサーバーの可用性や負荷耐性を検証するためのツールです。安全のため、ターゲットはローカルサンドボックス（<code>192.168.111.129:8081</code>）に完全固定されています。<br>
                 <strong>使い方：</strong> プリセットを選択するかパラメータを調整し、"RUN STRESS TEST" を実行してください。
             </div>
 
-            <!-- クイックプリセット -->
             <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.3rem;">クイックパラメータ・プリセット:</div>
             <div class="preset-group">
                 <button type="button" class="preset-btn" onclick="setPreset(10, 5)">軽負荷 (10 req)</button>
@@ -85,7 +82,7 @@
                 <div class="form-grid">
                     <div>
                         <label for="url">ターゲットURL (サンドボックス固定)</label>
-                        <input type="text" id="url" name="url" value="http://192.168.6.24/" readonly>
+                        <input type="text" id="url" name="url" value="http://192.168.111.129:8081/" readonly>
                     </div>
                     <div>
                         <label for="requests">総リクエスト数 (max 200)</label>
@@ -105,10 +102,8 @@
             <span>Security: Local Sandboxed Load Testing</span>
         </div>
 
-        <div class="terminal-box" id="terminalOutput">
-cyberlab@server:~$ パラメータを設定して "RUN STRESS TEST" を押してください。
-ローカルサンドボックスを対象とした非同期ストレステストを実行します。
-        </div>
+        <div class="terminal-box" id="terminalOutput">cyberlab@server:~$ パラメータを設定して "RUN STRESS TEST" を押してください。
+ローカルサンドボックス (192.168.111.129:8081) を対象とした非同期ストレステストを実行します。</div>
     </div>
 
     <script>
@@ -122,54 +117,62 @@ cyberlab@server:~$ パラメータを設定して "RUN STRESS TEST" を押して
         const terminalOutput = document.getElementById('terminalOutput');
         const execStatus = document.getElementById('execStatus');
 
+        function setTerminalText(text, isError = false) {
+            terminalOutput.className = isError ? 'terminal-box err-line' : 'terminal-box';
+            terminalOutput.textContent = text;
+        }
+
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const url = document.getElementById('url').value;
-            const requests = document.getElementById('requests').value;
-            const concurrency = document.getElementById('concurrency').value;
+            const requests = parseInt(document.getElementById('requests').value, 10);
+            const concurrency = parseInt(document.getElementById('concurrency').value, 10);
 
             submitBtn.disabled = true;
             submitBtn.textContent = 'TESTING...';
             execStatus.textContent = '負荷テスト実行中...';
-            terminalOutput.innerHTML = `cyberlab@server:~$ 非同期ストレステストを送信中...\n[Target: ${url} | Requests: ${requests} | Concurrency: ${concurrency}]`;
+            setTerminalText(
+                `cyberlab@server:~$ 非同期ストレステストを送信中...\n[Target: ${url} | Requests: ${requests} | Concurrency: ${concurrency}]`
+            );
 
             try {
-                const response = await fetch('/ddos/api/stress', {
+                const response = await fetch('api/stress', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        url: url,
-                        requests: parseInt(requests), 
-                        concurrency: parseInt(concurrency) 
-                    })
+                    body: JSON.stringify({ url, requests, concurrency })
                 });
 
                 const data = await response.json();
 
                 if (!response.ok) {
-                    terminalOutput.innerHTML += `\n\n[ERROR] ${data.error || 'ストレステストの実行に失敗しました'}`;
+                    setTerminalText(
+                        `\n[ERROR] ${data.error || 'ストレステストの実行に失敗しました'}`,
+                        true
+                    );
                     execStatus.textContent = 'エラー';
                 } else {
-                    let html = `\n====================================================\n`;
-                    html += `[LOAD TEST RESULTS - SUCCESS]\n`;
-                    html += `----------------------------------------------------\n`;
-                    html += `実行コマンド: ${data.command}\n`;
-                    html += `総リクエスト数: ${data.total_requests}\n`;
-                    html += `同時接続数:   ${data.concurrency}\n`;
-                    html += `所要時間:     ${data.total_time_sec} 秒\n`;
-                    html += `成功回数:     ${data.success_count}\n`;
-                    html += `失敗回数:     ${data.fail_count}\n`;
-                    html += `平均レイテンシ: ${data.avg_latency_ms} ms\n`;
-                    html += `スループット:   ${data.requests_per_sec} req/sec\n`;
-                    html += `====================================================\n`;
-                    html += `Stress test completed successfully.`;
+                    const summary = [
+                        '====================================================',
+                        '[LOAD TEST RESULTS - SUCCESS]',
+                        '----------------------------------------------------',
+                        `実行コマンド:   ${data.command ?? '-'}`,
+                        `総リクエスト数: ${data.total_requests ?? requests}`,
+                        `同時接続数:     ${data.concurrency ?? concurrency}`,
+                        `所要時間:       ${data.total_time_sec ?? '-'} 秒`,
+                        `成功回数:       ${data.success_count ?? '-'}`,
+                        `失敗回数:       ${data.fail_count ?? '-'}`,
+                        `平均レイテンシ: ${data.avg_latency_ms ?? '-'} ms`,
+                        `スループット:   ${data.requests_per_sec ?? '-'} req/sec`,
+                        '====================================================',
+                        'Stress test completed successfully.'
+                    ].join('\n');
 
-                    terminalOutput.innerHTML = html;
+                    setTerminalText(summary);
                     execStatus.textContent = 'テスト完了';
                 }
             } catch (err) {
-                terminalOutput.innerHTML += `\n\n[COMMUNICATION ERROR] ${err.message}`;
+                setTerminalText(`\n[COMMUNICATION ERROR] ${err.message}`, true);
                 execStatus.textContent = '通信エラー';
             } finally {
                 submitBtn.disabled = false;
