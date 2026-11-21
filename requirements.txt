@@ -2,5 +2,4 @@ flask
 gunicorn
 cryptography
 aiohttp
-requestsrequests
 requests
