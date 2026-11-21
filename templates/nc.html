@@ -11,11 +11,11 @@
             --card-bg: #0f101a;
             --text-main: #f8fafc;
             --text-muted: #64748b;
-            --accent: #22c55e; /* Netcatらしいグリーン系のアクセント */
+            --accent: #22c55e;
             --accent-hover: #16a34a;
             --border: #1e1b4b;
             --terminal-text: #4ade80;
-            --success-text: #4ade80;
+            --error-text: #f87171;
         }
         body {
             font-family: "Courier New", Consolas, monospace;
@@ -27,43 +27,123 @@
             justify-content: center;
         }
         .container { width: 100%; max-width: 950px; }
-        h1 { font-size: 1.3rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; color: var(--accent); display: flex; justify-content: space-between; align-items: center; }
-        .back-link { font-size: 0.8rem; background: var(--border); color: var(--text-muted); padding: 0.3rem 0.6rem; border-radius: 4px; text-decoration: none; }
+        h1 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.75rem;
+            color: var(--accent);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .back-link {
+            font-size: 0.8rem;
+            background: var(--border);
+            color: var(--text-muted);
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: 0.2s;
+        }
         .back-link:hover { color: var(--text-main); background: var(--accent-hover); }
 
-        .card { background-color: var(--card-bg); padding: 1.5rem; border-radius: 6px; border: 1px solid var(--border); margin-bottom: 1.5rem; }
-        .form-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        .card {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
         @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } }
 
-        label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem; }
-        select, input { width: 100%; padding: 0.6rem; border-radius: 4px; border: 1px solid var(--border); background-color: var(--bg-color); color: var(--text-main); box-sizing: border-box; font-family: inherit; font-size: 0.9rem; }
-        
-        button { width: 100%; padding: 0.7rem; background-color: var(--accent); color: #020205; border: none; border-radius: 4px; font-size: 0.95rem; font-weight: bold; cursor: pointer; font-family: inherit; transition: background 0.2s; }
-        button:hover { background-color: var(--accent-hover); color: white; }
+        label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+        select, input {
+            width: 100%;
+            padding: 0.6rem;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            box-sizing: border-box;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
 
-        /* 新設：機能解説エリアのスタイル */
-        .info-box { background-color: #0b1329; border-left: 4px solid var(--accent); padding: 0.75rem 1rem; font-size: 0.82rem; color: #94a3b8; margin-bottom: 1rem; line-height: 1.5; }
+        button {
+            width: 100%;
+            padding: 0.7rem;
+            background-color: var(--accent);
+            color: #020205;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s;
+        }
+        button:hover { background-color: var(--accent-hover); color: white; }
+        button:disabled { background-color: var(--border); color: var(--text-muted); cursor: not-allowed; }
+
+        .info-box {
+            background-color: #0b1329;
+            border-left: 4px solid var(--accent);
+            padding: 0.75rem 1rem;
+            font-size: 0.82rem;
+            color: #94a3b8;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
         .info-box strong { color: var(--text-main); }
 
-        .terminal-box { background-color: var(--terminal-bg); border: 1px solid var(--border); border-radius: 6px; padding: 1rem; min-height: 250px; max-height: 350px; overflow-y: auto; font-size: 0.85rem; color: var(--terminal-text); white-space: pre-wrap; line-height: 1.4; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
+        .terminal-box {
+            background-color: var(--terminal-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem;
+            min-height: 250px;
+            max-height: 360px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            color: var(--terminal-text);
+            white-space: pre-wrap;
+            word-break: break-word;
+            line-height: 1.5;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+        }
+        .err-line { color: var(--error-text); }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>
             <span>$ cyberlab-cli --netcat-tool</span>
-            <a href="/" class="back-link">[ ホームに戻る ]</a>
+            <a href="http://192.168.111.129:8081/" class="back-link">[ ホームに戻る ]</a>
         </h1>
-        
-        <!-- 機能解説セクション -->
+
         <div class="card">
             <label>ツール概要と使い方</label>
             <div class="info-box">
-                <strong>Netcat (nc) とは：</strong> ネットワークの「スイスアーミーナイフ」と呼ばれる多機能ツールです。ポートの開放確認、簡易的なバナー取得、データ転送、バックドア通信のシミュレーションなどに用いられます。<br>
-                <strong>使い方：</strong> 下記の操作モードを選択し、ターゲットのポート番号を設定して実行ボタンを押してください。ターゲットは安全なサンドボックス（<code>172.0.0.1</code>）に固定されています。
+                <strong>Netcat (nc) とは：</strong> ポートの疎通確認やサービスバナー取得、簡易的なTCP通信の検証などに使われる定番ネットワークツールです。<br>
+                <strong>使い方：</strong> 操作モードとポート番号（1〜65535）を指定して実行してください。ターゲットは安全な演習環境（<code>192.168.111.129</code>）に固定されています。
             </div>
 
-            <!-- 操作フォーム -->
             <form id="ncForm">
                 <div class="form-grid">
                     <div>
@@ -71,54 +151,74 @@
                         <select id="mode" name="mode">
                             <option value="scan">ポート疎通確認 (nc -zv -w 2)</option>
                             <option value="banner">バナー取得 (サービス情報確認)</option>
+                            <option value="http_head">HTTPヘッダ確認 (HEAD / 応答確認)</option>
                         </select>
                     </div>
                     <div>
                         <label for="port">ポート番号 (1〜65535)</label>
-                        <input type="number" id="port" name="port" value="80" min="1" max="65535">
+                        <input type="number" id="port" name="port" value="80" min="1" max="65535" required>
                     </div>
                 </div>
-                <button type="submit" id="submitBtn">検索　netcat</button>
+                <button type="submit" id="submitBtn">EXECUTE NETCAT (192.168.111.129)</button>
             </form>
         </div>
 
-        <!-- 実行結果コンソール -->
         <div class="card">
             <label>実行結果ログ (Terminal Output)</label>
-            <div class="terminal-box" id="terminalOutput">
-[Netcat Tool Initialized]
+            <div class="terminal-box" id="terminalOutput">[Netcat Tool Initialized]
 モードとポート番号を設定して "EXECUTE NETCAT" を押してください。
-ターゲットは安全なサンドボックス (172.0.0.1) に固定されています。
-            </div>
+ターゲットは安全な演習環境 (192.168.111.129) に固定されています。</div>
         </div>
     </div>
 
     <script>
+        const TARGET_IP = '192.168.111.129';
         const form = document.getElementById('ncForm');
+        const submitBtn = document.getElementById('submitBtn');
         const terminalOutput = document.getElementById('terminalOutput');
+
+        function appendLog(text, isError = false) {
+            const div = document.createElement('div');
+            if (isError) div.className = 'err-line';
+            div.textContent = text;
+            terminalOutput.appendChild(div);
+        }
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const mode = document.getElementById('mode').value;
-            const port = document.getElementById('port').value;
 
-            terminalOutput.innerHTML += `\n\n[ * ] 実行中... (Target: 172.0.0.1 / Port: ${port} / Mode: ${mode})`;
+            const mode = document.getElementById('mode').value;
+            const port = parseInt(document.getElementById('port').value, 10);
+
+            if (Number.isNaN(port) || port < 1 || port > 65535) {
+                appendLog('\n[ERROR] ポート番号は 1〜65535 の間で指定してください。', true);
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'EXECUTING...';
+            appendLog(`\n\n[ * ] 実行中... (Target: ${TARGET_IP} / Port: ${port} / Mode: ${mode})`);
 
             try {
-                const response = await fetch('/nc/api/run', {
+                const response = await fetch('api/run', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ mode, port })
                 });
+
                 const data = await response.json();
-                if (response.ok) {
-                    terminalOutput.innerHTML += `\n${data.output}`;
+
+                if (!response.ok) {
+                    appendLog(`[ERROR] ${data.error || '実行に失敗しました'}`, true);
                 } else {
-                    terminalOutput.innerHTML += `\n[ERROR] ${data.error || '実行に失敗しました'}`;
+                    appendLog(data.output || '出力なし');
                 }
-                terminalOutput.scrollTop = terminalOutput.scrollHeight;
             } catch (err) {
-                terminalOutput.innerHTML += `\n[ERROR] 通信エラーが発生しました。`;
+                appendLog(`[ERROR] 通信エラーが発生しました: ${err.message}`, true);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = `EXECUTE NETCAT (${TARGET_IP})`;
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
             }
         });
     </script>

@@ -28,11 +28,32 @@ MOCK_TARGETS = {
         "status": "up",
         "ports": [
             {
+                "port": 21,
+                "protocol": "tcp",
+                "state": "open",
+                "service": "ftp",
+                "version": "vsftpd 3.0.3",
+            },
+            {
                 "port": 22,
                 "protocol": "tcp",
                 "state": "open",
                 "service": "ssh",
                 "version": "OpenSSH 8.9p1 Ubuntu",
+            },
+            {
+                "port": 23,
+                "protocol": "tcp",
+                "state": "filtered",
+                "service": "telnet",
+                "version": "unknown",
+            },
+            {
+                "port": 53,
+                "protocol": "tcp",
+                "state": "open",
+                "service": "domain",
+                "version": "Microsoft DNS / BIND 9.18",
             },
             {
                 "port": 80,
@@ -42,11 +63,95 @@ MOCK_TARGETS = {
                 "version": "Apache httpd 2.4.41",
             },
             {
+                "port": 88,
+                "protocol": "tcp",
+                "state": "open",
+                "service": "kerberos-sec",
+                "version": "Microsoft Windows Kerberos",
+            },
+            {
+                "port": 135,
+                "protocol": "tcp",
+                "state": "open",
+                "service": "msrpc",
+                "version": "Microsoft Windows RPC",
+            },
+            {
+                "port": 139,
+                "protocol": "tcp",
+                "state": "open",
+                "service": "netbios-ssn",
+                "version": "Microsoft Windows netbios-ssn",
+            },
+            {
+                "port": 389,
+                "protocol": "tcp",
+                "state": "open",
+                "service": "ldap",
+                "version": "Microsoft Windows Active Directory LDAP",
+            },
+            {
                 "port": 443,
                 "protocol": "tcp",
                 "state": "open",
                 "service": "https",
                 "version": "Apache httpd 2.4.41",
+            },
+            {
+                "port": 445,
+                "protocol": "tcp",
+                "state": "open",
+                "service": "microsoft-ds",
+                "version": "Windows Server SMBv3",
+            },
+            {
+                "port": 636,
+                "protocol": "tcp",
+                "state": "open",
+                "service": "ldapssl",
+                "version": "Microsoft Windows Active Directory LDAPS",
+            },
+            {
+                "port": 1433,
+                "protocol": "tcp",
+                "state": "open",
+                "service": "ms-sql-s",
+                "version": "Microsoft SQL Server 2019",
+            },
+            {
+                "port": 3306,
+                "protocol": "tcp",
+                "state": "open",
+                "service": "mysql",
+                "version": "MySQL 8.0.36",
+            },
+            {
+                "port": 3389,
+                "protocol": "tcp",
+                "state": "open",
+                "service": "ms-wbt-server",
+                "version": "Microsoft Terminal Services (RDP)",
+            },
+            {
+                "port": 5432,
+                "protocol": "tcp",
+                "state": "open",
+                "service": "postgresql",
+                "version": "PostgreSQL 15.4",
+            },
+            {
+                "port": 5985,
+                "protocol": "tcp",
+                "state": "open",
+                "service": "wsman",
+                "version": "Microsoft HTTPAPI httpd 2.0 (WinRM)",
+            },
+            {
+                "port": 8080,
+                "protocol": "tcp",
+                "state": "open",
+                "service": "http-proxy",
+                "version": "Node.js Express",
             },
             {
                 "port": 8081,
@@ -55,10 +160,16 @@ MOCK_TARGETS = {
                 "service": "http-alt",
                 "version": "Werkzeug/Flask",
             },
+            {
+                "port": 8443,
+                "protocol": "tcp",
+                "state": "open",
+                "service": "https-alt",
+                "version": "Jetty / Management Console",
+            },
         ],
     }
 }
-
 
 def is_valid_ports(ports: str) -> bool:
     """ポート指定の形式と範囲（1-65535）をチェック (例: 1-1024, 80,443)"""
