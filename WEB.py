@@ -20,6 +20,7 @@ from nc import nc_bp
 from nmap import namp
 from XSS import XSS
 from index import index_bp 
+from market import market_bp
 
 app = Flask(__name__)
 app.secret_key = "jun.1026"
@@ -53,6 +54,8 @@ app.register_blueprint(gobuster_bp, url_prefix="/gobuster")
 app.register_blueprint(dark_logger_bp, url_prefix="/portal")
 app.register_blueprint(index_bp, url_prefix="/index")
 app.register_blueprint(dos_bp, url_prefix="/dos")
+app.register_blueprint(market_bp, url_prefix="/market")
+
 
 if __name__ == "__main__":
   app.run(
