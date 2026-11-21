@@ -192,11 +192,20 @@ body::after {
   margin-bottom: 10px;
   text-shadow: 0 0 5px rgba(255,31,61,0.5);
 }
+.victim-photo {
+  max-width: 280px;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin-bottom: 14px;
+  display: block;
+  border: 1px solid var(--border-color);
+}
 .statement-text {
   font-size: 0.82rem;
   line-height: 1.7;
   color: #c9d1d9;
-  white-space: pre-wrap; /* 改行をそのまま綺麗に反映 */
+  white-space: pre-wrap;
 }
 
 /* TIMER & ACTION BLOCK */
@@ -328,8 +337,8 @@ footer {
 
 <div class="main-container">
 
-  <!-- データベースから取得した全ターゲットをループ処理し、各組織ごとの脅迫文を表示 -->
   {% for v in victims %}
+  {% set img_file = v['image_filename'] if (v is mapping and 'image_filename' in v) else (v.image_filename if v.image_filename is defined else '') %}
   <div class="victim-card">
     
     <div class="victim-header-row">
@@ -349,9 +358,16 @@ footer {
       </div>
     </div>
 
-    <!-- ハッカー側の脅迫文・声明文表示エリア（データベースの statement カラムと直結） -->
+    <!-- 声明文・写真表示エリア -->
     <div class="statement-box">
       <div class="statement-title">[!] QILIN RANSOMWARE GROUP STATEMENT & DEMAND</div>
+    {% if v.image_filename %}
+    <img
+    src="{{ url_for('static', filename='images/' + v.image_filename) }}"
+    alt="{{ v.name }}"
+    class="victim-photo"
+    />
+{% endif %}
       <div class="statement-text">{{ v.statement }}</div>
     </div>
 
@@ -393,7 +409,7 @@ footer {
 </footer>
 
 <script>
-let remainingSecs = {{ dynamic_seconds_left }};
+let remainingSecs = {{ dynamic_seconds_left | int }};
 
 function updateAllTimers() {
   if (remainingSecs > 0) {
