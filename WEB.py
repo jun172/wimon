@@ -54,7 +54,7 @@ app.register_blueprint(gobuster_bp, url_prefix="/gobuster")
 app.register_blueprint(dark_logger_bp, url_prefix="/portal")
 app.register_blueprint(index_bp, url_prefix="/index")
 app.register_blueprint(dos_bp, url_prefix="/dos")
-app.register_blueprint(market_bp, url_prefix="/market")
+app.register_blueprint(market_bp, url_prefix="/market", name="market_bp_route")
 
 
 if __name__ == "__main__":
