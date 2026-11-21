@@ -9,6 +9,7 @@ from ONE import ONE
 from SQL import SQL
 from brute import brute_bp
 from ddos import stress_bp
+from dos import dos_bp
 
 # ⬅️ 追加: 脅迫文モック＆ログ管理用Blueprintのインポート
 from dark_logger import dark_logger_bp
@@ -51,6 +52,7 @@ app.register_blueprint(ip_bp, url_prefix="/ip")
 app.register_blueprint(gobuster_bp, url_prefix="/gobuster")
 app.register_blueprint(dark_logger_bp, url_prefix="/portal")
 app.register_blueprint(index_bp, url_prefix="/index")
+app.register_blueprint(dos_bp, url_prefix="/dos")
 
 if __name__ == "__main__":
   app.run(

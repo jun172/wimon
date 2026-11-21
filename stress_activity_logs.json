@@ -1,5 +1,27 @@
 [
   {
+    "timestamp": "2026-11-21 13:08:19",
+    "target_url": "http://192.168.111.129:8081/",
+    "total_requests": 50,
+    "concurrency": 10,
+    "total_time_sec": 0.25,
+    "success_count": 50,
+    "fail_count": 0,
+    "avg_latency_ms": 43.15,
+    "requests_per_sec": 202.68
+  },
+  {
+    "timestamp": "2026-11-21 13:07:33",
+    "target_url": "http://192.168.111.129:8081/",
+    "total_requests": 50,
+    "concurrency": 10,
+    "total_time_sec": 0.24,
+    "success_count": 50,
+    "fail_count": 0,
+    "avg_latency_ms": 42.52,
+    "requests_per_sec": 206.29
+  },
+  {
     "timestamp": "2026-11-21 11:33:53",
     "target_url": "http://192.168.111.129:8081/",
     "total_requests": 50,
