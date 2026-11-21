@@ -1,8 +1,7 @@
 from datetime import datetime
 from pathlib import Path
 import sqlite3
-from flask import Blueprint, render_template
-
+from flask import Blueprint, jsonify, render_template, request
 index_bp = Blueprint(
     "index_portal",
     __name__,
@@ -164,3 +163,19 @@ def switch_target(target_id):
     portal_dict["dynamic_seconds_left"] = remaining_seconds
 
     return render_template("index.html", portal=portal_dict, targets=targets_list)
+
+@index_bp.route("/api/chat", methods=["POST"])
+def chat_negotiation():
+    data = request.get_json(silent=True) or {}
+    message = str(data.get("message", "")).strip()
+    if not message:
+        return jsonify({"error": "メッセージが空です"}), 400
+
+    if any(k in message for k in ("証拠", "証明", "サンプル")):
+        reply = "要求するなら一部ファイルのハッシュ値やリストを提示できる。だが時間稼ぎは許さない。"
+    elif any(k in message for k in ("支払", "払う", "金額", "交渉")):
+        reply = "条件を呑むなら復号手段とリーク停止を提示する。カウントダウンが終わる前に判断しろ。"
+    else:
+        reply = "カウントダウンは進んでいる。無駄な引き延ばしはやめて経営層の回答を出せ。"
+
+    return jsonify({"reply": reply})

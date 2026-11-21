@@ -97,15 +97,6 @@ body::after {
   gap: 15px;
   font-size: 0.82rem;
 }
-.selector-select {
-  background: #0e131d;
-  border: 1px solid var(--border-color);
-  color: var(--text-bright);
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-family: monospace;
-  outline: none;
-}
 
 /* METRICS GRID */
 .metrics-grid {
@@ -231,7 +222,13 @@ body::after {
   color: #ff7b00;
   margin-bottom: 12px;
   white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.5;
 }
+.msg-user { color: var(--accent-cyan); }
+.msg-bot { color: var(--accent-orange); }
+.msg-sys { color: var(--accent-green); }
+
 .chat-input-row {
   display: flex;
   gap: 10px;
@@ -247,6 +244,9 @@ body::after {
   font-size: 0.8rem;
   outline: none;
 }
+.chat-input:focus {
+  border-color: var(--accent-orange);
+}
 .send-btn {
   background: var(--accent-orange);
   color: #000;
@@ -256,6 +256,14 @@ body::after {
   border-radius: 4px;
   cursor: pointer;
   font-family: monospace;
+}
+.send-btn:hover {
+  opacity: 0.9;
+}
+.send-btn:disabled {
+  background: var(--border-color);
+  color: var(--text-muted);
+  cursor: not-allowed;
 }
 
 /* FILE TREE */
@@ -352,16 +360,14 @@ body::after {
         <span>🛡️ フォレンジック・侵入プロセスログ (MITRE ATT&CK)</span>
         <span style="color: var(--accent-red);">[CRITICAL]</span>
       </div>
-      <div class="mitre-log">
-[+] Target: {{ portal.name }}
+      <div class="mitre-log">[+] Target: {{ portal.name }}
 [+] Breach Date: {{ portal.breach_date }}
 [+] T1200 - Hardware Additions: Unsecured physical network drop in conference room.
 [+] T1550 - Use Alternate Authentication Material: AD Credential Dumping & Domain Controller (DC) takeover.
 [+] T1486 - Data Encrypted for Impact: Local NAS & file servers locked with custom extension.
 [+] T1567 - Exfiltration Over Web Service: S3 Bucket & Azure Blob fully siphoned ({{ portal.data_size }}).
 [+] T1490 - Inbuilt Backup Deletion: VSS shadows and immutable cloud snapshots purged.
-[+] Status: Double Extortion Enforced. Awaiting C-Level Response.
-      </div>
+[+] Status: Double Extortion Enforced. Awaiting C-Level Response.</div>
     </div>
 
     <!-- 攻撃者とのリアルタイム交渉シミュレーション -->
@@ -369,16 +375,34 @@ body::after {
       <div class="panel-title">
         <span>💬 攻撃者とのリアルタイム交渉シミュレーション (Live Chat)</span>
       </div>
-      <div class="chat-tabs">
-        <div class="chat-tab active">チャット対話</div>
-        <div class="chat-tab">対応ガイドライン</div>
-        <div class="chat-tab">緊急アクション</div>
+      <div class="chat-tabs" id="chatTabs">
+        <div class="chat-tab active" data-tab="chat">チャット対話</div>
+        <div class="chat-tab" data-tab="guideline">対応ガイドライン</div>
+        <div class="chat-tab" data-tab="action">緊急アクション</div>
       </div>
-      <div class="chat-box">[Qilin/LockBit Bot]: {{ portal.name }}の機密情報はすべて我々の手にある。早く指示に従い金を払わなければ、すべてのデータを公表する。</div>
-      <div class="chat-input-row">
-        <input type="text" class="chat-input" placeholder="交渉担当者としての返答を入力..." />
-        <button class="send-btn">送信</button>
+
+      <!-- チャット対話パネル -->
+      <div id="panel-chat">
+        <div class="chat-box" id="chatBox">
+          <div class="msg-bot">[Qilin/LockBit Bot]: {{ portal.name }}の機密情報はすべて我々の手にある。早く指示に従い金を払わなければ、すべてのデータを公表する。</div>
+        </div>
+        <form class="chat-input-row" id="chatForm">
+          <input type="text" id="chatInput" class="chat-input" placeholder="交渉担当者としての返答を入力..." autocomplete="off" />
+          <button type="submit" id="sendBtn" class="send-btn">送信</button>
+        </form>
       </div>
+
+      <!-- 対応ガイドラインパネル -->
+      <div id="panel-guideline" class="chat-box msg-sys" style="display: none; height: 186px;">[CSIRT 交渉ガイドライン]
+1. 冷静さを保ち、証拠保全（ログ・通信履歴の記録）を最優先とする。
+2. 復号可能性やデータ実在性の確認（サンプル確認）を行う際は、隔離環境で検証する。
+3. 支払いの可否・法務／経営判断は CSIRT・経営層・法務・警察等の連携基準に従う。</div>
+
+      <!-- 緊急アクションパネル -->
+      <div id="panel-action" class="chat-box msg-sys" style="display: none; height: 186px;">[緊急初動チェックリスト]
+- 侵害端末・侵害アカウントのネットワーク隔離および認証情報リセット
+- クラウド認証キー（S3 / Azure Blob 等）のローテーションと外部公開確認
+- バックアップ基盤の健全性確認とインシデントタイムラインの記録</div>
     </div>
 
   </div>
@@ -403,8 +427,8 @@ body::after {
 </div>
 
 <script>
+// カウントダウンタイマー
 let remainingSecs = {{ portal.dynamic_seconds_left }};
-
 function updateTimer() {
   if (remainingSecs > 0) {
     remainingSecs--;
@@ -412,11 +436,82 @@ function updateTimer() {
   let h = Math.floor(remainingSecs / 3600);
   let m = Math.floor((remainingSecs % 3600) / 60);
   let s = remainingSecs % 60;
-  document.getElementById('countdown-timer').innerText = `${h.toString().padStart(2,'0')}h : ${m.toString().padStart(2,'0')}m : ${s.toString().padStart(2,'0')}s`;
+  document.getElementById('countdown-timer').innerText =
+    `${h.toString().padStart(2,'0')}h : ${m.toString().padStart(2,'0')}m : ${s.toString().padStart(2,'0')}s`;
 }
-
 setInterval(updateTimer, 1000);
 updateTimer();
+
+// チャットタブ切り替え
+const tabs = document.querySelectorAll('#chatTabs .chat-tab');
+const panelChat = document.getElementById('panel-chat');
+const panelGuideline = document.getElementById('panel-guideline');
+const panelAction = document.getElementById('panel-action');
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const target = tab.dataset.tab;
+    panelChat.style.display = target === 'chat' ? 'block' : 'none';
+    panelGuideline.style.display = target === 'guideline' ? 'block' : 'none';
+    panelAction.style.display = target === 'action' ? 'block' : 'none';
+  });
+});
+
+// チャット送信処理
+const chatForm = document.getElementById('chatForm');
+const chatInput = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
+const chatBox = document.getElementById('chatBox');
+
+function appendChatMessage(senderLabel, text, cssClass) {
+  const now = new Date().toLocaleTimeString('ja-JP', { hour12: false });
+  const div = document.createElement('div');
+  div.className = cssClass;
+  div.textContent = `[${now}] ${senderLabel}: ${text}`;
+  chatBox.appendChild(div);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function generateDrillReply(message) {
+  if (message.includes('証拠') || message.includes('証明') || message.includes('サンプル')) {
+    return '要求するなら一部ファイルのハッシュ値やリストを見せることはできる。だが時間稼ぎは許さない。';
+  }
+  if (message.includes('支払') || message.includes('払う') || message.includes('金額') || message.includes('交渉')) {
+    return '条件を呑むなら復号ツールとリーク停止を約束する。決断はカウントダウンが終わる前にしろ。';
+  }
+  return '無駄な問答は不要だ。カウントダウンは進んでいる。経営層の回答を出せ。';
+}
+
+chatForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const message = chatInput.value.trim();
+  if (!message) return;
+
+  appendChatMessage('Negotiator (CSIRT)', message, 'msg-user');
+  chatInput.value = '';
+  chatInput.focus();
+  sendBtn.disabled = true;
+
+  try {
+    const res = await fetch('api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      appendChatMessage('Qilin/LockBit Bot', data.reply || generateDrillReply(message), 'msg-bot');
+    } else {
+      appendChatMessage('Qilin/LockBit Bot', generateDrillReply(message), 'msg-bot');
+    }
+  } catch (_) {
+    appendChatMessage('Qilin/LockBit Bot', generateDrillReply(message), 'msg-bot');
+  } finally {
+    sendBtn.disabled = false;
+  }
+});
 </script>
 
 </body>
