@@ -3,188 +3,392 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyberLab - C1 Target Agent Sandbox</title>
+    <title>CyberLab Web CLI - C1 Console</title>
     <style>
         :root {
-            --bg-color: #050509;
-            --terminal-bg: #020205;
-            --card-bg: #0f101a;
-            --text-main: #f8fafc;
+            --bg-color: #05070c;
+            --terminal-bg: #020306;
+            --card-bg: #0c1220;
+            --text-main: #e2e8f0;
             --text-muted: #64748b;
             --accent: #38bdf8;
             --accent-hover: #0284c7;
-            --border: #1e1b4b;
-            --terminal-text: #7dd3fc;
+            --border: #1e293b;
+            --terminal-text: #38bdf8;
             --success-text: #4ade80;
             --error-text: #f87171;
         }
-        body { font-family: "Courier New", Consolas, monospace; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 2rem; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 950px; }
-        h1 { font-size: 1.3rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; color: var(--accent); display: flex; justify-content: space-between; align-items: center; }
-        .back-link { font-size: 0.8rem; background: var(--border); color: var(--text-muted); padding: 0.3rem 0.6rem; border-radius: 4px; text-decoration: none; }
+        body {
+            font-family: "Courier New", Consolas, monospace;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: center;
+        }
+        .container { width: 100%; max-width: 1020px; }
+        h1 {
+            font-size: 1.25rem;
+            margin: 0 0 1.25rem 0;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--accent);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .back-link {
+            font-size: 0.8rem;
+            background: var(--border);
+            color: var(--text-muted);
+            padding: 0.35rem 0.65rem;
+            border-radius: 4px;
+            text-decoration: none;
+        }
         .back-link:hover { color: var(--text-main); background: var(--accent-hover); }
-        .card { background-color: var(--card-bg); padding: 1.5rem; border-radius: 6px; border: 1px solid var(--border); margin-bottom: 1.5rem; }
-        label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem; }
-        button { width: 100%; padding: 0.7rem; background-color: var(--accent); color: #020205; border: none; border-radius: 4px; font-size: 0.95rem; font-weight: bold; cursor: pointer; font-family: inherit; transition: background 0.2s; }
-        button:hover { background-color: var(--accent-hover); color: white; }
-        button:disabled { background-color: var(--border); color: var(--text-muted); cursor: not-allowed; }
-        .btn-danger { background-color: #ef4444; color: white; }
-        .btn-danger:hover { background-color: #dc2626; }
-        .terminal-box { background-color: var(--terminal-bg); border: 1px solid var(--border); border-radius: 6px; padding: 1rem; min-height: 220px; max-height: 320px; overflow-y: auto; font-size: 0.85rem; color: var(--terminal-text); white-space: pre-wrap; word-break: break-word; line-height: 1.4; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); margin-bottom: 1rem; }
-        ul { margin: 0; padding-left: 1.2rem; color: var(--text-muted); font-size: 0.85rem; }
-        input { width: 100%; padding: 0.6rem; border-radius: 4px; border: 1px solid var(--border); background-color: var(--bg-color); color: var(--text-main); box-sizing: border-box; font-family: inherit; font-size: 0.9rem; }
-        .status-ok { font-size: 0.85rem; color: var(--success-text); }
-        .status-err { font-size: 0.85rem; color: var(--error-text); }
-        .err-line { color: var(--error-text); }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        .q-btn {
+            background: #111827;
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 0.3rem 0.6rem;
+            font-size: 0.78rem;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        .q-btn:hover {
+            background: var(--accent);
+            color: #020306;
+            font-weight: bold;
+        }
+        .q-btn.toggle-active {
+            background: var(--accent);
+            color: #020306;
+            font-weight: bold;
+        }
+
+        .terminal-box {
+            background-color: var(--terminal-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem;
+            height: 360px;
+            overflow-y: auto;
+            font-size: 0.86rem;
+            line-height: 1.45;
+            white-space: pre-wrap;
+            word-break: break-word;
+            margin-bottom: 0.75rem;
+        }
+        .line-cmd { color: var(--success-text); }
+        .line-out { color: var(--terminal-text); }
+        .line-err { color: var(--error-text); }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--terminal-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.5rem 0.75rem;
+        }
+        .prompt-label {
+            color: var(--success-text);
+            white-space: nowrap;
+            font-size: 0.88rem;
+        }
+        #cmdInput {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        #runBtn {
+            background: var(--accent);
+            color: #020306;
+            border: none;
+            border-radius: 4px;
+            padding: 0.45rem 0.9rem;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        #runBtn:hover { background: var(--accent-hover); color: #fff; }
+        .meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* ターミナル外：100選コマンドドロワー */
+        .outside-panel {
+            display: none;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem 1.25rem;
+        }
+        .outside-panel.open { display: block; }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .panel-title {
+            font-size: 0.92rem;
+            color: var(--accent);
+            font-weight: bold;
+        }
+        #cmdSearch {
+            background: var(--terminal-bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.82rem;
+            padding: 0.35rem 0.6rem;
+            min-width: 220px;
+        }
+        .cmd-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.4rem;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+        .cmd-chip {
+            background: var(--terminal-bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 0.35rem 0.55rem;
+            font-size: 0.78rem;
+            color: var(--text-main);
+            text-align: left;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        .cmd-chip:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>
-            <span>$ cyberlab --c1-target-agent-node</span>
+            <span>$ cyberlab-web --c1-shell</span>
             <a href="/" class="back-link">[ ホームに戻る ]</a>
         </h1>
 
         <div class="card">
-            <label>ターゲット環境情報 (Sandbox Node)</label>
-            <div id="targetInfo" class="status-ok">情報を取得中...</div>
-        </div>
-
-        <div class="card">
-            <label>サンドボックス内ファイル ({{ sandbox }})</label>
-            <ul id="fileList" style="margin-bottom: 1rem;">
-                {% for f in files %}
-                <li>{{ f }}</li>
-                {% endfor %}
-            </ul>
-            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                <button type="button" id="lockBtn" class="btn-danger" onclick="lockFiles()">ファイルを暗号化する (ロック)</button>
+            <div class="toolbar">
+                <button type="button" class="q-btn" onclick="runQuick('help')">help</button>
+                <button type="button" class="q-btn" onclick="runQuick('pwd')">pwd</button>
+                <button type="button" class="q-btn" onclick="runQuick('ls -la')">ls -la</button>
+                <button type="button" class="q-btn" onclick="runQuick('tree')">tree</button>
+                <button type="button" class="q-btn" id="drawerBtn" onclick="toggleOutsidePanel()">外パネル: コマンド100選</button>
+                <button type="button" class="q-btn" onclick="runQuick('whoami')">whoami</button>
+                <button type="button" class="q-btn" onclick="runQuick('uname -a')">uname -a</button>
+                <button type="button" class="q-btn" onclick="clearTerminal()">clear</button>
             </div>
-            <div style="display: flex; gap: 1rem;">
-                <input type="text" id="keyInput" placeholder="復元キーを入力 (空欄なら保存済みの secret.key を使用)">
-                <button type="button" id="unlockBtn" onclick="unlockFiles()" style="background-color: var(--success-text); color: #020205;">復元する</button>
-            </div>
-        </div>
 
-        <div class="card">
-            <label for="customCmd">エージェント自己テスト用コマンド実行 (候補: AUDIT_SYS, ps aux, procs, GET_PROCS)</label>
-            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
-                <input type="text" id="customCmd" list="cmdPresets" value="AUDIT_SYS">
-                <datalist id="cmdPresets">
-                    <option value="AUDIT_SYS"></option>
-                    <option value="ps aux"></option>
-                    <option value="procs"></option>
-                    <option value="GET_PROCS"></option>
-                </datalist>
-                <button type="button" id="execBtn" onclick="runCommand()">EXECUTE</button>
+            <div class="terminal-box" id="terminal"></div>
+
+            <form class="input-row" id="cmdForm">
+                <span class="prompt-label" id="promptLabel">c1:/$</span>
+                <input type="text" id="cmdInput" placeholder="コマンドを入力（例: pwd, ls -la, cd logs, cat notes.txt）" autocomplete="off" autofocus>
+                <button type="submit" id="runBtn">実行</button>
+            </form>
+
+            <div class="meta">
+                <span>Sandbox: ./sandbox（外部パスへの移動は制限）</span>
+                <span>↑ / ↓ でコマンド履歴</span>
             </div>
         </div>
 
-        <div class="terminal-box" id="terminalOutput">[C1 Agent Node Initialized]
-ターゲット端末としてのサンドボックス・ファイル保護状態を監視・操作できます。</div>
+        <!-- ターミナルの外側パネル -->
+        <div class="outside-panel" id="outsidePanel">
+            <div class="panel-header">
+                <span class="panel-title">基礎コマンド100選（クリックで入力欄へ挿入）</span>
+                <input type="text" id="cmdSearch" placeholder="コマンド名で絞り込み..." oninput="renderCmdChips()">
+            </div>
+            <div class="cmd-grid" id="cmdGrid"></div>
+        </div>
     </div>
 
     <script>
-        const terminalOutput = document.getElementById('terminalOutput');
-        const targetInfo = document.getElementById('targetInfo');
+        const ALL_COMMANDS = [
+            "pwd", "cd", "ls", "tree", "clear", "history", "man", "which", "type", "exit",
+            "touch", "mkdir", "cp", "mv", "rm", "rmdir", "ln", "file", "stat", "basename",
+            "dirname", "realpath", "mktemp", "shred", "dd", "cat", "tac", "head", "tail", "less",
+            "more", "wc", "grep", "egrep", "cut", "awk", "sed", "sort", "uniq", "tr",
+            "paste", "diff", "comm", "tee", "xargs", "find", "locate", "tar", "gzip", "bzip2",
+            "xz", "zip", "rsync", "md5sum", "sha256sum", "chmod", "chown", "chgrp", "umask", "id",
+            "whoami", "who", "w", "su", "sudo", "useradd", "usermod", "userdel", "passwd", "ps",
+            "top", "htop", "pgrep", "pkill", "kill", "jobs", "fg", "bg", "nohup", "uptime",
+            "uname", "free", "df", "du", "dmesg", "ip", "ss", "netstat", "ping", "traceroute",
+            "curl", "wget", "dig", "nslookup", "nc", "ssh", "scp", "systemctl", "journalctl", "env",
+            "export", "crontab", "alias"
+        ];
 
-        function appendTerminal(text, isError = false) {
+        const terminal = document.getElementById('terminal');
+        const cmdForm = document.getElementById('cmdForm');
+        const cmdInput = document.getElementById('cmdInput');
+        const promptLabel = document.getElementById('promptLabel');
+        const outsidePanel = document.getElementById('outsidePanel');
+        const drawerBtn = document.getElementById('drawerBtn');
+        const cmdSearch = document.getElementById('cmdSearch');
+        const cmdGrid = document.getElementById('cmdGrid');
+
+        let cwdVirtual = '/';
+        let cmdHistory = [];
+        let historyIdx = -1;
+
+        function appendLine(text, cls = 'line-out') {
+            if (!text) return;
             const div = document.createElement('div');
-            if (isError) div.className = 'err-line';
+            div.className = cls;
             div.textContent = text;
-            terminalOutput.appendChild(div);
-            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+            terminal.appendChild(div);
+            terminal.scrollTop = terminal.scrollHeight;
         }
 
-        async function fetchStatus() {
-            try {
-                const res = await fetch('api/status');
-                const data = await res.json();
-                if (!res.ok) {
-                    targetInfo.className = 'status-err';
-                    targetInfo.textContent = 'ステータスの取得に失敗しました';
-                    return;
-                }
-                targetInfo.className = 'status-ok';
-                targetInfo.textContent =
-                    `OS: ${data.system} ${data.release} | User: ${data.current_user} | Root: ${data.is_elevated_root} | Dir: ${data.working_directory}`;
-            } catch (err) {
-                targetInfo.className = 'status-err';
-                targetInfo.textContent = 'ステータスの取得に失敗しました';
+        function clearTerminal() {
+            terminal.innerHTML = '';
+        }
+
+        function setPrompt(path) {
+            cwdVirtual = path || '/';
+            promptLabel.textContent = `c1:${cwdVirtual}$`;
+        }
+
+        function toggleOutsidePanel() {
+            const isOpen = outsidePanel.classList.toggle('open');
+            drawerBtn.classList.toggle('toggle-active', isOpen);
+            if (isOpen) {
+                renderCmdChips();
+                cmdSearch.focus();
             }
         }
-        fetchStatus();
 
-        async function runCommand() {
-            const cmdInput = document.getElementById('customCmd');
-            const execBtn = document.getElementById('execBtn');
-            const command = cmdInput.value.trim();
-            if (!command) return;
+        function renderCmdChips() {
+            const q = (cmdSearch.value || '').trim().toLowerCase();
+            const list = ALL_COMMANDS.filter(c => !q || c.includes(q));
+            cmdGrid.innerHTML = '';
+            list.forEach(c => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'cmd-chip';
+                btn.textContent = c;
+                btn.onclick = () => {
+                    cmdInput.value = c + ' ';
+                    cmdInput.focus();
+                };
+                cmdGrid.appendChild(btn);
+            });
+        }
 
-            execBtn.disabled = true;
-            appendTerminal(`\n\n$ ${command}`);
+        async function executeCommand(rawCmd) {
+            const trimmed = rawCmd.trim();
+            if (!trimmed) return;
+
+            cmdHistory.push(trimmed);
+            historyIdx = cmdHistory.length;
+
+            appendLine(`${promptLabel.textContent} ${trimmed}`, 'line-cmd');
+
+            if (trimmed === 'clear') {
+                clearTerminal();
+                return;
+            }
+
+            if (trimmed === 'cmdlist' || trimmed.startsWith('cmdlist ')) {
+                if (!outsidePanel.classList.contains('open')) {
+                    toggleOutsidePanel();
+                }
+                const kw = trimmed.slice('cmdlist'.length).trim();
+                cmdSearch.value = kw;
+                renderCmdChips();
+                appendLine('コマンド100選はターミナル外のパネルに表示しました。', 'line-out');
+                return;
+            }
 
             try {
-                const res = await fetch('api/execute', {
+                const res = await fetch('api/exec', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ command })
+                    body: JSON.stringify({ command: trimmed, cwd: cwdVirtual })
                 });
                 const data = await res.json();
-                if (res.ok) {
-                    appendTerminal(`\n${data.output}`);
-                } else {
-                    const allowed = Array.isArray(data.allowed_commands)
-                        ? ` (許可コマンド: ${data.allowed_commands.join(', ')})`
-                        : '';
-                    appendTerminal(`\n[ERROR] ${data.error || '実行に失敗しました'}${allowed}`, true);
-                }
+
+                if (data.cwd) setPrompt(data.cwd);
+                if (data.clear) clearTerminal();
+                if (data.output) appendLine(data.output, data.ok === false ? 'line-err' : 'line-out');
+                if (data.error) appendLine(data.error, 'line-err');
             } catch (err) {
-                appendTerminal(`\n[COMMUNICATION ERROR] ${err.message}`, true);
-            } finally {
-                execBtn.disabled = false;
+                appendLine(`[通信エラー] ${err.message}`, 'line-err');
             }
         }
 
-        async function lockFiles() {
-            if (!confirm("サンドボックス内のファイルを暗号化しますか？")) return;
-            const lockBtn = document.getElementById('lockBtn');
-            lockBtn.disabled = true;
-            try {
-                const res = await fetch('api/lock', { method: 'POST' });
-                const data = await res.json();
-                alert(data.message || '暗号化処理が完了しました');
-                location.reload();
-            } catch (err) {
-                alert("通信エラーが発生しました: " + err.message);
-            } finally {
-                lockBtn.disabled = false;
-            }
+        function runQuick(cmd) {
+            executeCommand(cmd);
+            cmdInput.focus();
         }
 
-        async function unlockFiles() {
-            const key = document.getElementById('keyInput').value.trim();
-            const unlockBtn = document.getElementById('unlockBtn');
-            unlockBtn.disabled = true;
-            try {
-                const res = await fetch('api/unlock', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ key })
-                });
-                const data = await res.json();
-                if (res.ok) {
-                    alert(data.message || '復元に成功しました');
-                    location.reload();
-                } else {
-                    alert("エラー: " + (data.message || '復元に失敗しました'));
+        cmdForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const val = cmdInput.value;
+            cmdInput.value = '';
+            executeCommand(val);
+        });
+
+        cmdInput.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowUp') {
+                if (historyIdx > 0) {
+                    historyIdx -= 1;
+                    cmdInput.value = cmdHistory[historyIdx];
                 }
-            } catch (err) {
-                alert("通信エラーが発生しました: " + err.message);
-            } finally {
-                unlockBtn.disabled = false;
+                e.preventDefault();
+            } else if (e.key === 'ArrowDown') {
+                if (historyIdx < cmdHistory.length - 1) {
+                    historyIdx += 1;
+                    cmdInput.value = cmdHistory[historyIdx];
+                } else {
+                    historyIdx = cmdHistory.length;
+                    cmdInput.value = '';
+                }
+                e.preventDefault();
             }
-        }
+        });
+
+        appendLine('C1 Web Shell 準備完了。ターミナル内に一覧は出さず、100選は外パネルに表示します。', 'line-out');
     </script>
 </body>
 </html>

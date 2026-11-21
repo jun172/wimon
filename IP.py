@@ -1,49 +1,48 @@
+import ipaddress
 import json
 import os
 from datetime import datetime
 from flask import Blueprint, jsonify, render_template, request
 
 ip_bp = Blueprint("ip_lab", __name__, template_folder="templates")
-LOG_FILE = "target_ip_logs.json"
-CONFIG_FILE = "target_ip_config.json"
 
-# デフォルトの監視対象IPリスト
-DEFAULT_TARGET_IPS = ["192.168.6.14"]
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+LOG_FILE = os.path.join(BASE_DIR, "target_ip_logs.json")
 
-
-def load_target_ips():
-  """監視対象のIPリストをファイルから読み込む"""
-  if os.path.exists(CONFIG_FILE):
-    try:
-      with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
-    except Exception:
-      pass
-  return DEFAULT_TARGET_IPS
+# リストではなく「現在指定されている単一の監視対象IP（未指定時は None）」
+active_target_ip: str | None = None
 
 
-def save_target_ips(ips):
-  """監視対象のIPリストをファイルに保存する"""
+def is_valid_ip(ip_str: str) -> bool:
+  """IPv4 / IPv6 アドレスとして妥当か判定する"""
   try:
-    with open(CONFIG_FILE, "w", encoding="utf-8") as f:
-      json.dump(ips, f, ensure_ascii=False, indent=2)
-  except Exception:
-    pass
+    ipaddress.ip_address(ip_str)
+    return True
+  except ValueError:
+    return False
+
+
+def get_client_ip() -> str:
+  """リクエスト元のIPアドレスを取得する（プロキシ経由時は先頭IPを優先）"""
+  xff = request.headers.get("X-Forwarded-For", "").strip()
+  if xff:
+    first_ip = xff.split(",")[0].strip()
+    if first_ip:
+      return first_ip
+  return (request.remote_addr or "").strip()
 
 
 def log_access(response):
-  """アクセス監査ミドルウェア：指定されたIPからのアクセスのみを記録"""
+  """アクセス監査ミドルウェア：入力された対象IPからのアクセスのみを記録"""
   if "/static/" in request.path:
     return response
 
-  client_ip = request.headers.get("X-Forwarded-For", request.remote_addr)
-  target_ips = load_target_ips()
+  client_ip = get_client_ip()
 
-  # 監視対象のIPアドレスからのアクセスである場合のみ記録
-  if client_ip in target_ips:
-    # POSTデータやクエリパラメータの安全な取得
+  # リストではなく、現在設定されている単一の入力IPと一致する場合のみ記録
+  if active_target_ip and client_ip == active_target_ip:
     body_data = None
-    if request.method in ["POST", "PUT"]:
+    if request.method in ["POST", "PUT", "PATCH"]:
       try:
         body_data = request.get_json(silent=True) or request.form.to_dict()
       except Exception:
@@ -63,12 +62,14 @@ def log_access(response):
     if os.path.exists(LOG_FILE):
       try:
         with open(LOG_FILE, "r", encoding="utf-8") as f:
-          logs = json.load(f)
+          loaded = json.load(f)
+          if isinstance(loaded, list):
+            logs = loaded
       except Exception:
         logs = []
 
     logs.insert(0, entry)
-    logs = logs[:100]  # 最新100件保持
+    logs = logs[:100]
 
     try:
       with open(LOG_FILE, "w", encoding="utf-8") as f:
@@ -87,14 +88,15 @@ def index():
 # 📋 ログ取得API
 @ip_bp.route("/api/ip/logs", methods=["GET"])
 def get_logs():
-  logs = []
   if os.path.exists(LOG_FILE):
     try:
       with open(LOG_FILE, "r", encoding="utf-8") as f:
-        logs = json.load(f)
+        data = json.load(f)
+        if isinstance(data, list):
+          return jsonify(data)
     except Exception:
-      logs = []
-  return jsonify(logs)
+      pass
+  return jsonify([])
 
 
 # 🗑️ ログクリアAPI
@@ -108,45 +110,38 @@ def clear_logs():
     return jsonify({"status": "error", "message": str(e)}), 500
 
 
-# 🎯 現在の監視対象IP一覧を取得
+# 🎯 現在の監視対象IP（単一または null）を取得
 @ip_bp.route("/api/ip/targets", methods=["GET"])
 def get_targets():
-  return jsonify(load_target_ips())
+  return jsonify({"ip": active_target_ip})
 
 
-# ➕ 監視対象IPを追加
+# ✏️ 入力されたIPを監視対象としてセット（リストではなく上書き）
 @ip_bp.route("/api/ip/targets", methods=["POST"])
-def add_target():
-  data = request.get_json() or {}
-  new_ip = data.get("ip", "").strip()
+def set_target():
+  global active_target_ip
+  data = request.get_json(silent=True) or {}
+  new_ip = str(data.get("ip", "")).strip()
   if not new_ip:
     return jsonify({"status": "error", "message": "IPアドレスが空です"}), 400
+  if not is_valid_ip(new_ip):
+    return jsonify({"status": "error", "message": "有効なIPアドレス形式ではありません"}), 400
 
-  ips = load_target_ips()
-  if new_ip not in ips:
-    ips.append(new_ip)
-    save_target_ips(ips)
-
-  return jsonify(
-      {"status": "success", "targets": ips, "message": f"IP {new_ip} を追加しました"}
-  )
+  active_target_ip = new_ip
+  return jsonify({
+      "status": "success",
+      "ip": active_target_ip,
+      "message": f"監視対象IPを {active_target_ip} に設定しました",
+  })
 
 
-# ➖ 監視対象IPを削除
+# ✖ 監視対象IPを解除
 @ip_bp.route("/api/ip/targets", methods=["DELETE"])
-def remove_target():
-  data = request.get_json() or {}
-  target_ip = data.get("ip", "").strip()
-
-  ips = load_target_ips()
-  if target_ip in ips:
-    ips.remove(target_ip)
-    save_target_ips(ips)
-
-  return jsonify(
-      {
-          "status": "success",
-          "targets": ips,
-          "message": f"IP {target_ip} を削除しました",
-      }
-  )
+def clear_target():
+  global active_target_ip
+  active_target_ip = None
+  return jsonify({
+      "status": "success",
+      "ip": None,
+      "message": "監視対象IPを解除しました",
+  })
