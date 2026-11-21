@@ -1,6 +1,5 @@
 import re
 import shutil
-import socket
 import subprocess
 from flask import Blueprint, jsonify, render_template, request
 
@@ -8,6 +7,8 @@ from flask import Blueprint, jsonify, render_template, request
 nc_bp = Blueprint("nc", __name__, template_folder="templates")
 
 TARGET_IP = "192.168.111.129"
+MAX_PORTS_PER_REQUEST = 64
+MAX_OUTPUT_CHARS = 1500
 
 # 許可する Netcat の操作モード（ホワイトリスト）
 ALLOWED_MODES = {
@@ -30,6 +31,7 @@ MOCK_PORTS = {
     },
     88: {"open": True, "service": "kerberos-sec", "banner": "Kerberos v5 (tcp/88) listening"},
     135: {"open": True, "service": "msrpc", "banner": "Microsoft RPC Endpoint Mapper (tcp/135) open"},
+    139: {"open": True, "service": "netbios-ssn", "banner": "NetBIOS Session Service (tcp/139) open"},
     389: {"open": True, "service": "ldap", "banner": "LDAP service (tcp/389) open"},
     443: {
         "open": True,
@@ -37,9 +39,11 @@ MOCK_PORTS = {
         "banner": "HTTP/1.1 200 OK\r\nServer: Apache/2.4.41 (Ubuntu)\r\nTLSv1.3 / Subject: CN=192.168.111.129",
     },
     445: {"open": True, "service": "microsoft-ds", "banner": "SMB service (tcp/445) open"},
+    636: {"open": True, "service": "ldapssl", "banner": "LDAPS service (tcp/636) open"},
     1433: {"open": True, "service": "ms-sql-s", "banner": "MSSQL TDS service (tcp/1433) open"},
     3306: {"open": True, "service": "mysql", "banner": "8.0.36-0ubuntu0.22.04.1"},
     3389: {"open": True, "service": "ms-wbt-server", "banner": "RDP service (tcp/3389) open"},
+    5432: {"open": True, "service": "postgresql", "banner": "PostgreSQL 15.4"},
     5985: {"open": True, "service": "wsman", "banner": "WinRM HTTPAPI service (tcp/5985) open"},
     8080: {
         "open": True,
@@ -51,6 +55,11 @@ MOCK_PORTS = {
         "service": "http-alt",
         "banner": "HTTP/1.1 200 OK\r\nServer: Werkzeug/3.0.0 Python/3.11.0",
     },
+    8443: {
+        "open": True,
+        "service": "https-alt",
+        "banner": "HTTP/1.1 200 OK\r\nServer: Jetty / Management Console",
+    },
 }
 
 
@@ -60,9 +69,7 @@ def parse_ports_spec(ports_raw: str) -> list[int] | None:
     総数が多すぎる場合は安全のため制限（最大64ポート）。
     """
     text = str(ports_raw).strip()
-    if not text:
-        return None
-    if not re.match(r"^[0-9,-]+$", text):
+    if not text or not re.fullmatch(r"[0-9,-]+", text):
         return None
 
     result_ports: list[int] = []
@@ -76,7 +83,7 @@ def parse_ports_spec(ports_raw: str) -> list[int] | None:
             start_p, end_p = int(bounds[0]), int(bounds[1])
             if not (1 <= start_p <= 65535 and 1 <= end_p <= 65535 and start_p <= end_p):
                 return None
-            if (end_p - start_p + 1) > 64:
+            if (end_p - start_p + 1) > MAX_PORTS_PER_REQUEST:
                 return None
             result_ports.extend(range(start_p, end_p + 1))
         else:
@@ -87,9 +94,8 @@ def parse_ports_spec(ports_raw: str) -> list[int] | None:
                 return None
             result_ports.append(p)
 
-    # 重複除去しつつ順序維持
     unique_ports = list(dict.fromkeys(result_ports))
-    if not unique_ports or len(unique_ports) > 64:
+    if not unique_ports or len(unique_ports) > MAX_PORTS_PER_REQUEST:
         return None
     return unique_ports
 
@@ -106,11 +112,11 @@ def build_nc_command(target: str, port: int, mode: str) -> tuple[list[str], str 
     if mode == "http_head":
         cmd = ["nc", "-v", "-w", "2", target, p_str]
         payload = f"HEAD / HTTP/1.0\r\nHost: {target}\r\nConnection: close\r\n\r\n"
-        return cmd, payload, f'printf "HEAD / HTTP/1.0\\r\\n\\r\\n" | {" ".join(cmd)}'
+        return cmd, payload, f'printf "HEAD / HTTP/1.0\\r\\nHost: {target}\\r\\n\\r\\n" | {" ".join(cmd)}'
     if mode == "http_get":
         cmd = ["nc", "-v", "-w", "2", target, p_str]
         payload = f"GET / HTTP/1.0\r\nHost: {target}\r\nConnection: close\r\n\r\n"
-        return cmd, payload, f'printf "GET / HTTP/1.0\\r\\n\\r\\n" | {" ".join(cmd)}'
+        return cmd, payload, f'printf "GET / HTTP/1.0\\r\\nHost: {target}\\r\\n\\r\\n" | {" ".join(cmd)}'
     if mode == "tls_check":
         cmd = ["openssl", "s_client", "-connect", f"{target}:{p_str}", "-brief"]
         return cmd, "Q\n", " ".join(cmd)
@@ -152,21 +158,15 @@ def run_single_port(target: str, port: int, mode: str, has_nc: bool, has_openssl
             encoding="utf-8",
             errors="replace",
         )
-        combined = ""
-        if result.stdout:
-            combined += result.stdout
-        if result.stderr:
-            combined += result.stderr
+        combined = f"{result.stdout or ''}{result.stderr or ''}".strip()
 
-        # nc -zv などで接続拒否・応答なしの場合、演習環境ならモック補完するかそのまま返す
-        if not combined.strip():
+        if not combined:
             combined = mock_fallback(target, port, mode)
 
-        # 長すぎる出力は先頭1500文字程度にトリム
-        if len(combined) > 1500:
-            combined = combined[:1500] + "\n... (出力が長いため省略しました)"
+        if len(combined) > MAX_OUTPUT_CHARS:
+            combined = combined[:MAX_OUTPUT_CHARS] + "\n... (出力が長いため省略しました)"
 
-        return display_cmd, combined.strip()
+        return display_cmd, combined
 
     except subprocess.TimeoutExpired:
         return display_cmd, mock_fallback(target, port, mode)
@@ -179,18 +179,24 @@ def index():
     return render_template("nc.html", modes=ALLOWED_MODES, target_ip=TARGET_IP)
 
 
+@nc_bp.route("/api/run", methods=["POST"])
 @nc_bp.route("/api/exec", methods=["POST"])
 def execute_nc():
-    data = request.get_json(silent=True) or {}
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        data = {}
 
     target = TARGET_IP
-    mode = str(data.get("mode", "port_check")).strip()
-    raw_port = str(data.get("port", "80")).strip()
+    raw_mode = data.get("mode", "port_check")
+    raw_port = data.get("port", "80")
+
+    mode = raw_mode.strip() if isinstance(raw_mode, str) else "port_check"
+    port_text = str(raw_port).strip() if raw_port is not None else "80"
 
     if mode not in ALLOWED_MODES:
         return jsonify({"error": "許可されていない実行モードです。"}), 400
 
-    ports = parse_ports_spec(raw_port)
+    ports = parse_ports_spec(port_text)
     if ports is None:
         return jsonify({
             "error": "ポート指定が無効です（1〜65535の数値、カンマ区切り、または64ポート以内の範囲を指定してください）。"
@@ -210,9 +216,11 @@ def execute_nc():
         else:
             sections.append(out_text)
 
+    summary_cmd = " ; ".join(commands_used[:3]) + (" ..." if len(commands_used) > 3 else "")
+
     return jsonify({
         "target": target,
         "ports": ports,
-        "command": " ; ".join(commands_used[:3]) + (" ..." if len(commands_used) > 3 else ""),
+        "command": summary_cmd,
         "output": "\n\n".join(sections),
     })

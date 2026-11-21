@@ -141,7 +141,7 @@
             <label>ツール概要と使い方</label>
             <div class="info-box">
                 <strong>Netcat (nc) とは：</strong> ポートの疎通確認やサービスバナー取得、簡易的なTCP通信の検証などに使われる定番ネットワークツールです。<br>
-                <strong>使い方：</strong> 操作モードとポート番号（1〜65535）を指定して実行してください。ターゲットは安全な演習環境（<code>192.168.111.129</code>）に固定されています。
+                <strong>使い方：</strong> 操作モードとポート番号（単一・カンマ区切り・範囲指定可）を指定して実行してください。ターゲットは安全な演習環境（<code>192.168.111.129</code>）に固定されています。
             </div>
 
             <form id="ncForm">
@@ -149,14 +149,16 @@
                     <div>
                         <label for="mode">操作モード</label>
                         <select id="mode" name="mode">
-                            <option value="scan">ポート疎通確認 (nc -zv -w 2)</option>
-                            <option value="banner">バナー取得 (サービス情報確認)</option>
-                            <option value="http_head">HTTPヘッダ確認 (HEAD / 応答確認)</option>
+                            <option value="port_check">ポート疎通確認 (nc -zv -w 2)</option>
+                            <option value="banner_grab">バナー取得 / 接続応答確認 (nc -v -w 2)</option>
+                            <option value="http_head">HTTP ヘッダ取得 (HEAD / HTTP/1.0 送信)</option>
+                            <option value="http_get">HTTP レスポンス確認 (GET / HTTP/1.0 送信)</option>
+                            <option value="tls_check">TLS/SSL 証明書確認 (openssl s_client)</option>
                         </select>
                     </div>
                     <div>
-                        <label for="port">ポート番号 (1〜65535)</label>
-                        <input type="number" id="port" name="port" value="80" min="1" max="65535" required>
+                        <label for="port">ポート指定 (例: 80, 80,443, 20-25)</label>
+                        <input type="text" id="port" name="port" value="80" required>
                     </div>
                 </div>
                 <button type="submit" id="submitBtn">EXECUTE NETCAT (192.168.111.129)</button>
@@ -188,10 +190,10 @@
             e.preventDefault();
 
             const mode = document.getElementById('mode').value;
-            const port = parseInt(document.getElementById('port').value, 10);
+            const port = document.getElementById('port').value.trim();
 
-            if (Number.isNaN(port) || port < 1 || port > 65535) {
-                appendLog('\n[ERROR] ポート番号は 1〜65535 の間で指定してください。', true);
+            if (!port) {
+                appendLog('\n[ERROR] ポート番号を入力してください。', true);
                 return;
             }
 
